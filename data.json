@@ -1,0 +1,863 @@
+[
+  {
+    "room_id": "B01",
+    "room_name": "Broodstock 01",
+    "room_type": "broodstock",
+    "manual_status": "",
+    "technician": "Amal",
+    "last_updated": "2026-03-24 08:00",
+    "equipment": [
+      {
+        "equipment_id": "UV-B01",
+        "equipment_name": "UV",
+        "type": "uv",
+        "components": [
+          {
+            "component_id": "UV-B01-B1",
+            "component_name": "Ballast 1",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-03-10 08:00",
+            "lifetime_hours": 4320,
+            "technician": "Amal",
+            "last_updated": "2026-03-24 08:00",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B01-B2",
+            "component_name": "Ballast 2",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-03-10 08:00",
+            "lifetime_hours": 4320,
+            "technician": "Amal",
+            "last_updated": "2026-03-24 08:00",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B01-B3",
+            "component_name": "Ballast 3",
+            "type": "ballast",
+            "status": "Critical",
+            "start_date": "2025-08-01 08:00",
+            "lifetime_hours": 4320,
+            "technician": "Amal",
+            "last_updated": "2026-03-24 08:00",
+            "notes": "Replace urgently"
+          },
+          {
+            "component_id": "UV-B01-L1",
+            "component_name": "Lamp 1",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-02-10 08:00",
+            "lifetime_hours": 4320,
+            "technician": "Amal",
+            "last_updated": "2026-03-24 08:00",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B01-L2",
+            "component_name": "Lamp 2",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-02-10 08:00",
+            "lifetime_hours": 4320,
+            "technician": "Amal",
+            "last_updated": "2026-03-24 08:00",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B01-L3",
+            "component_name": "Lamp 3",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-02-10 08:00",
+            "lifetime_hours": 4320,
+            "technician": "Amal",
+            "last_updated": "2026-03-24 08:00",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "equipment_id": "PUMP-B01",
+        "equipment_name": "Pump",
+        "type": "pump",
+        "status": "OK",
+        "start_date": "2026-01-10 08:00",
+        "lifetime_hours": 4320,
+        "technician": "Amal",
+        "last_updated": "2026-03-24 08:00",
+        "notes": ""
+      },
+      {
+        "equipment_id": "FILTER-B01",
+        "equipment_name": "Filter",
+        "type": "filter",
+        "status": "OK",
+        "start_date": "2026-01-10 08:00",
+        "lifetime_hours": 4320,
+        "technician": "Amal",
+        "last_updated": "2026-03-24 08:00",
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "room_id": "B02",
+    "room_name": "Broodstock 02",
+    "room_type": "broodstock",
+    "manual_status": "",
+    "technician": "Nadia",
+    "last_updated": "2026-03-24 07:30",
+    "equipment": [
+      {
+        "equipment_id": "UV-B02",
+        "equipment_name": "UV",
+        "type": "uv",
+        "components": [
+          {
+            "component_id": "UV-B02-B1",
+            "component_name": "Ballast 1",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-01-20 07:30",
+            "lifetime_hours": 4320,
+            "technician": "Nadia",
+            "last_updated": "2026-03-24 07:30",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B02-B2",
+            "component_name": "Ballast 2",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-01-20 07:30",
+            "lifetime_hours": 4320,
+            "technician": "Nadia",
+            "last_updated": "2026-03-24 07:30",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B02-B3",
+            "component_name": "Ballast 3",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-01-20 07:30",
+            "lifetime_hours": 4320,
+            "technician": "Nadia",
+            "last_updated": "2026-03-24 07:30",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B02-L1",
+            "component_name": "Lamp 1",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-01-20 07:30",
+            "lifetime_hours": 4320,
+            "technician": "Nadia",
+            "last_updated": "2026-03-24 07:30",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B02-L2",
+            "component_name": "Lamp 2",
+            "type": "lamp",
+            "status": "Critical",
+            "start_date": "2025-08-05 07:30",
+            "lifetime_hours": 4320,
+            "technician": "Nadia",
+            "last_updated": "2026-03-24 07:30",
+            "notes": "Lamp failed inspection"
+          },
+          {
+            "component_id": "UV-B02-L3",
+            "component_name": "Lamp 3",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-01-20 07:30",
+            "lifetime_hours": 4320,
+            "technician": "Nadia",
+            "last_updated": "2026-03-24 07:30",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "equipment_id": "PUMP-B02",
+        "equipment_name": "Pump",
+        "type": "pump",
+        "status": "OK",
+        "start_date": "2026-02-01 07:30",
+        "lifetime_hours": 4320,
+        "technician": "Nadia",
+        "last_updated": "2026-03-24 07:30",
+        "notes": ""
+      },
+      {
+        "equipment_id": "FILTER-B02",
+        "equipment_name": "Filter",
+        "type": "filter",
+        "status": "OK",
+        "start_date": "2026-02-01 07:30",
+        "lifetime_hours": 4320,
+        "technician": "Nadia",
+        "last_updated": "2026-03-24 07:30",
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "room_id": "B03",
+    "room_name": "Broodstock 03",
+    "room_type": "broodstock",
+    "manual_status": "",
+    "technician": "Karim",
+    "last_updated": "2026-03-24 06:45",
+    "equipment": [
+      {
+        "equipment_id": "UV-B03",
+        "equipment_name": "UV",
+        "type": "uv",
+        "components": [
+          {
+            "component_id": "UV-B03-B1",
+            "component_name": "Ballast 1",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-02-05 06:45",
+            "lifetime_hours": 4320,
+            "technician": "Karim",
+            "last_updated": "2026-03-24 06:45",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B03-B2",
+            "component_name": "Ballast 2",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-02-05 06:45",
+            "lifetime_hours": 4320,
+            "technician": "Karim",
+            "last_updated": "2026-03-24 06:45",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B03-B3",
+            "component_name": "Ballast 3",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-02-05 06:45",
+            "lifetime_hours": 4320,
+            "technician": "Karim",
+            "last_updated": "2026-03-24 06:45",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B03-L1",
+            "component_name": "Lamp 1",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-02-05 06:45",
+            "lifetime_hours": 4320,
+            "technician": "Karim",
+            "last_updated": "2026-03-24 06:45",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B03-L2",
+            "component_name": "Lamp 2",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-02-05 06:45",
+            "lifetime_hours": 4320,
+            "technician": "Karim",
+            "last_updated": "2026-03-24 06:45",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B03-L3",
+            "component_name": "Lamp 3",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-02-05 06:45",
+            "lifetime_hours": 4320,
+            "technician": "Karim",
+            "last_updated": "2026-03-24 06:45",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "equipment_id": "PUMP-B03",
+        "equipment_name": "Pump",
+        "type": "pump",
+        "status": "Warning",
+        "start_date": "2025-12-20 06:45",
+        "lifetime_hours": 4320,
+        "technician": "Karim",
+        "last_updated": "2026-03-24 06:45",
+        "notes": "Close to service limit"
+      },
+      {
+        "equipment_id": "FILTER-B03",
+        "equipment_name": "Filter",
+        "type": "filter",
+        "status": "OK",
+        "start_date": "2026-02-10 06:45",
+        "lifetime_hours": 4320,
+        "technician": "Karim",
+        "last_updated": "2026-03-24 06:45",
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "room_id": "B04",
+    "room_name": "Broodstock 04",
+    "room_type": "broodstock",
+    "manual_status": "",
+    "technician": "Sami",
+    "last_updated": "2026-03-24 05:30",
+    "equipment": [
+      {
+        "equipment_id": "UV-B04",
+        "equipment_name": "UV",
+        "type": "uv",
+        "components": [
+          {
+            "component_id": "UV-B04-B1",
+            "component_name": "Ballast 1",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-01-15 05:30",
+            "lifetime_hours": 4320,
+            "technician": "Sami",
+            "last_updated": "2026-03-24 05:30",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B04-B2",
+            "component_name": "Ballast 2",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-01-15 05:30",
+            "lifetime_hours": 4320,
+            "technician": "Sami",
+            "last_updated": "2026-03-24 05:30",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B04-B3",
+            "component_name": "Ballast 3",
+            "type": "ballast",
+            "status": "Critical",
+            "start_date": "2025-08-01 05:30",
+            "lifetime_hours": 4320,
+            "technician": "Sami",
+            "last_updated": "2026-03-24 05:30",
+            "notes": "Immediate replacement required"
+          },
+          {
+            "component_id": "UV-B04-L1",
+            "component_name": "Lamp 1",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-01-15 05:30",
+            "lifetime_hours": 4320,
+            "technician": "Sami",
+            "last_updated": "2026-03-24 05:30",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B04-L2",
+            "component_name": "Lamp 2",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-01-15 05:30",
+            "lifetime_hours": 4320,
+            "technician": "Sami",
+            "last_updated": "2026-03-24 05:30",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B04-L3",
+            "component_name": "Lamp 3",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-01-15 05:30",
+            "lifetime_hours": 4320,
+            "technician": "Sami",
+            "last_updated": "2026-03-24 05:30",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "equipment_id": "PUMP-B04",
+        "equipment_name": "Pump",
+        "type": "pump",
+        "status": "OK",
+        "start_date": "2026-02-20 05:30",
+        "lifetime_hours": 4320,
+        "technician": "Sami",
+        "last_updated": "2026-03-24 05:30",
+        "notes": ""
+      },
+      {
+        "equipment_id": "FILTER-B04",
+        "equipment_name": "Filter",
+        "type": "filter",
+        "status": "OK",
+        "start_date": "2026-02-20 05:30",
+        "lifetime_hours": 4320,
+        "technician": "Sami",
+        "last_updated": "2026-03-24 05:30",
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "room_id": "B05",
+    "room_name": "Broodstock 05",
+    "room_type": "broodstock",
+    "manual_status": "",
+    "technician": "Leila",
+    "last_updated": "2026-03-24 09:00",
+    "equipment": [
+      {
+        "equipment_id": "UV-B05",
+        "equipment_name": "UV",
+        "type": "uv",
+        "components": [
+          {
+            "component_id": "UV-B05-B1",
+            "component_name": "Ballast 1",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-03-24 09:00",
+            "lifetime_hours": 4320,
+            "technician": "Leila",
+            "last_updated": "2026-03-24 09:00",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B05-B2",
+            "component_name": "Ballast 2",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-03-24 09:00",
+            "lifetime_hours": 4320,
+            "technician": "Leila",
+            "last_updated": "2026-03-24 09:00",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B05-B3",
+            "component_name": "Ballast 3",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-03-24 09:00",
+            "lifetime_hours": 4320,
+            "technician": "Leila",
+            "last_updated": "2026-03-24 09:00",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B05-L1",
+            "component_name": "Lamp 1",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-03-24 09:00",
+            "lifetime_hours": 4320,
+            "technician": "Leila",
+            "last_updated": "2026-03-24 09:00",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B05-L2",
+            "component_name": "Lamp 2",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-03-24 09:00",
+            "lifetime_hours": 4320,
+            "technician": "Leila",
+            "last_updated": "2026-03-24 09:00",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B05-L3",
+            "component_name": "Lamp 3",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-03-24 09:00",
+            "lifetime_hours": 4320,
+            "technician": "Leila",
+            "last_updated": "2026-03-24 09:00",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "equipment_id": "PUMP-B05",
+        "equipment_name": "Pump",
+        "type": "pump",
+        "status": "OK",
+        "start_date": "2026-03-24 09:00",
+        "lifetime_hours": 4320,
+        "technician": "Leila",
+        "last_updated": "2026-03-24 09:00",
+        "notes": ""
+      },
+      {
+        "equipment_id": "FILTER-B05",
+        "equipment_name": "Filter",
+        "type": "filter",
+        "status": "Critical",
+        "start_date": "2025-08-10 09:00",
+        "lifetime_hours": 4320,
+        "technician": "Leila",
+        "last_updated": "2026-03-24 09:00",
+        "notes": "Filter replacement overdue"
+      }
+    ]
+  },
+  {
+    "room_id": "B06",
+    "room_name": "Broodstock 06",
+    "room_type": "broodstock",
+    "manual_status": "",
+    "technician": "Omar",
+    "last_updated": "2026-03-24 01:00",
+    "equipment": [
+      {
+        "equipment_id": "UV-B06",
+        "equipment_name": "UV",
+        "type": "uv",
+        "components": [
+          {
+            "component_id": "UV-B06-B1",
+            "component_name": "Ballast 1",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-01-05 01:00",
+            "lifetime_hours": 4320,
+            "technician": "Omar",
+            "last_updated": "2026-03-24 01:00",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B06-B2",
+            "component_name": "Ballast 2",
+            "type": "ballast",
+            "status": "Critical",
+            "start_date": "2025-08-20 01:00",
+            "lifetime_hours": 4320,
+            "technician": "Omar",
+            "last_updated": "2026-03-24 01:00",
+            "notes": "Immediate intervention required"
+          },
+          {
+            "component_id": "UV-B06-B3",
+            "component_name": "Ballast 3",
+            "type": "ballast",
+            "status": "OK",
+            "start_date": "2026-01-05 01:00",
+            "lifetime_hours": 4320,
+            "technician": "Omar",
+            "last_updated": "2026-03-24 01:00",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B06-L1",
+            "component_name": "Lamp 1",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-01-05 01:00",
+            "lifetime_hours": 4320,
+            "technician": "Omar",
+            "last_updated": "2026-03-24 01:00",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B06-L2",
+            "component_name": "Lamp 2",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-01-05 01:00",
+            "lifetime_hours": 4320,
+            "technician": "Omar",
+            "last_updated": "2026-03-24 01:00",
+            "notes": ""
+          },
+          {
+            "component_id": "UV-B06-L3",
+            "component_name": "Lamp 3",
+            "type": "lamp",
+            "status": "OK",
+            "start_date": "2026-01-05 01:00",
+            "lifetime_hours": 4320,
+            "technician": "Omar",
+            "last_updated": "2026-03-24 01:00",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "equipment_id": "PUMP-B06",
+        "equipment_name": "Pump",
+        "type": "pump",
+        "status": "OK",
+        "start_date": "2026-02-01 01:00",
+        "lifetime_hours": 4320,
+        "technician": "Omar",
+        "last_updated": "2026-03-24 01:00",
+        "notes": ""
+      },
+      {
+        "equipment_id": "FILTER-B06",
+        "equipment_name": "Filter",
+        "type": "filter",
+        "status": "OK",
+        "start_date": "2026-02-01 01:00",
+        "lifetime_hours": 4320,
+        "technician": "Omar",
+        "last_updated": "2026-03-24 01:00",
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "room_id": "L01",
+    "room_name": "Larval 01",
+    "room_type": "larval",
+    "manual_status": "",
+    "technician": "Amal",
+    "last_updated": "2026-03-25 03:47",
+    "equipment": [
+      {
+        "equipment_id": "M-L01",
+        "equipment_name": "Machine",
+        "type": "machine",
+        "status": "Critical",
+        "start_date": "2025-08-01 12:00",
+        "lifetime_hours": 4320.0,
+        "technician": "Amal",
+        "last_updated": "2026-03-25 03:47",
+        "notes": "critical demo"
+      }
+    ]
+  },
+  {
+    "room_id": "L02",
+    "room_name": "Larval 02",
+    "room_type": "larval",
+    "manual_status": "",
+    "technician": "Sara",
+    "last_updated": "2026-03-24 11:00",
+    "equipment": [
+      {
+        "equipment_id": "M-L02",
+        "equipment_name": "Machine",
+        "type": "machine",
+        "status": "Critical",
+        "start_date": "2025-08-02 11:00",
+        "lifetime_hours": 4320,
+        "technician": "Sara",
+        "last_updated": "2026-03-24 11:00",
+        "notes": "Majority critical demo"
+      }
+    ]
+  },
+  {
+    "room_id": "L03",
+    "room_name": "Larval 03",
+    "room_type": "larval",
+    "manual_status": "",
+    "technician": "Mhamed",
+    "last_updated": "2026-03-24 03:00",
+    "equipment": [
+      {
+        "equipment_id": "M-L03",
+        "equipment_name": "Machine",
+        "type": "machine",
+        "status": "Warning",
+        "start_date": "2025-12-15 03:00",
+        "lifetime_hours": 4320,
+        "technician": "Mhamed",
+        "last_updated": "2026-03-24 03:00",
+        "notes": "Service window approaching"
+      }
+    ]
+  },
+  {
+    "room_id": "N1-01",
+    "room_name": "Nursery1 01",
+    "room_type": "nursery1",
+    "manual_status": "",
+    "technician": "Amal",
+    "last_updated": "2026-03-24 04:00",
+    "equipment": [
+      {
+        "equipment_id": "M-N101",
+        "equipment_name": "Machine",
+        "type": "machine",
+        "status": "Critical",
+        "start_date": "2025-08-03 04:00",
+        "lifetime_hours": 4320,
+        "technician": "Amal",
+        "last_updated": "2026-03-24 04:00",
+        "notes": "Critical demo room"
+      }
+    ]
+  },
+  {
+    "room_id": "N1-02",
+    "room_name": "Nursery1 02",
+    "room_type": "nursery1",
+    "manual_status": "",
+    "technician": "tester",
+    "last_updated": "2026-03-24 05:00",
+    "equipment": [
+      {
+        "equipment_id": "M-N102",
+        "equipment_name": "Machine",
+        "type": "machine",
+        "status": "Warning",
+        "start_date": "2025-12-18 05:00",
+        "lifetime_hours": 4320,
+        "technician": "tester",
+        "last_updated": "2026-03-24 05:00",
+        "notes": "Service due soon"
+      }
+    ]
+  },
+  {
+    "room_id": "N1-03",
+    "room_name": "Nursery1 03",
+    "room_type": "nursery1",
+    "manual_status": "",
+    "technician": "DUDU",
+    "last_updated": "2026-03-24 06:00",
+    "equipment": [
+      {
+        "equipment_id": "M-N103",
+        "equipment_name": "Machine",
+        "type": "machine",
+        "status": "OK",
+        "start_date": "2026-03-24 06:00",
+        "lifetime_hours": 4320,
+        "technician": "DUDU",
+        "last_updated": "2026-03-24 06:00",
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "room_id": "N2-01",
+    "room_name": "Nursery2 01",
+    "room_type": "nursery2",
+    "manual_status": "",
+    "technician": "BUBU",
+    "last_updated": "2026-03-24 07:00",
+    "equipment": [
+      {
+        "equipment_id": "M-N201",
+        "equipment_name": "Machine",
+        "type": "machine",
+        "status": "Critical",
+        "start_date": "2025-08-04 07:00",
+        "lifetime_hours": 4320,
+        "technician": "BUBU",
+        "last_updated": "2026-03-24 07:00",
+        "notes": "Critical demo room"
+      }
+    ]
+  },
+  {
+    "room_id": "N2-02",
+    "room_name": "Nursery2 02",
+    "room_type": "nursery2",
+    "manual_status": "",
+    "technician": "Mhamed",
+    "last_updated": "2026-03-24 08:15",
+    "equipment": [
+      {
+        "equipment_id": "M-N202",
+        "equipment_name": "Machine",
+        "type": "machine",
+        "status": "Critical",
+        "start_date": "2025-08-06 08:15",
+        "lifetime_hours": 4320,
+        "technician": "Mhamed",
+        "last_updated": "2026-03-24 08:15",
+        "notes": "Critical demo room"
+      }
+    ]
+  },
+  {
+    "room_id": "N2-03",
+    "room_name": "Nursery2 03",
+    "room_type": "nursery2",
+    "manual_status": "",
+    "technician": "Mhamed",
+    "last_updated": "2026-03-24 09:20",
+    "equipment": [
+      {
+        "equipment_id": "M-N203",
+        "equipment_name": "Machine",
+        "type": "machine",
+        "status": "Warning",
+        "start_date": "2025-12-22 09:20",
+        "lifetime_hours": 4320,
+        "technician": "Mhamed",
+        "last_updated": "2026-03-24 09:20",
+        "notes": "Approaching maintenance threshold"
+      }
+    ]
+  },
+  {
+    "room_id": "N2-04",
+    "room_name": "Nursery2 04",
+    "room_type": "nursery2",
+    "manual_status": "",
+    "technician": "Amal",
+    "last_updated": "2026-03-24 10:10",
+    "equipment": [
+      {
+        "equipment_id": "M-N204",
+        "equipment_name": "Machine",
+        "type": "machine",
+        "status": "Critical",
+        "start_date": "2025-08-08 10:10",
+        "lifetime_hours": 4320,
+        "technician": "Amal",
+        "last_updated": "2026-03-24 10:10",
+        "notes": "Critical demo room"
+      }
+    ]
+  },
+  {
+    "room_id": "N2-05",
+    "room_name": "Nursery2 05",
+    "room_type": "nursery2",
+    "manual_status": "",
+    "technician": "Amal",
+    "last_updated": "2026-03-24 11:10",
+    "equipment": [
+      {
+        "equipment_id": "M-N205",
+        "equipment_name": "Machine",
+        "type": "machine",
+        "status": "OK",
+        "start_date": "2026-03-24 11:10",
+        "lifetime_hours": 4320,
+        "technician": "Amal",
+        "last_updated": "2026-03-24 11:10",
+        "notes": ""
+      }
+    ]
+  }
+]
