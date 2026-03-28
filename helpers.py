@@ -1,117 +1,160 @@
 import csv
 import io
-import math
-from datetime import datetime
+from io import BytesIO
 
-from constants import DEFAULT_LIFETIME_HOURS
+from openpyxl import Workbook
+from openpyxl.drawing.image import Image as XLImage
+from openpyxl.formatting.rule import DataBarRule
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+
+from constants import (
+    BADGE_LOGO_FILE,
+    HEADER_LOGO_FILE,
+    INITIAL_LIFETIME_LABEL,
+    WARNING_DAYS,
+)
 
 
-def parse_datetime(value):
+def format_date(value):
     if not value:
-        return None
+        return "N/A"
+    return value.strftime("%Y-%m-%d")
 
-    text = str(value).strip().replace("T", " ")
 
-    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d"):
-        try:
-            return datetime.strptime(text, fmt)
-        except ValueError:
-            pass
+def format_number(value, decimals=0):
+    if value is None or value == "":
+        return "N/A"
 
     try:
-        return datetime.fromisoformat(text)
-    except ValueError:
-        return None
+        value = float(value)
+    except (TypeError, ValueError):
+        return str(value)
 
+    if decimals == 0:
+        if value.is_integer():
+            return str(int(value))
+        return f"{value:.0f}"
 
-def now_string():
-    return datetime.now().strftime("%Y-%m-%d %H:%M")
-
-
-def short_date(value):
-    dt = parse_datetime(value)
-    if not dt:
-        return "N/A"
-    return dt.strftime("%Y-%m-%d")
-
-
-def normalize_status(value):
-    status = str(value or "").strip().title()
-    if status not in ["OK", "Warning", "Critical"]:
-        return "OK"
-    return status
-
-
-def normalize_manual_status(value):
-    raw = str(value or "").strip()
-    if raw == "":
-        return ""
-    return normalize_status(raw)
+    return f"{value:.{decimals}f}"
 
 
 def format_hours(hours):
     if hours is None:
         return "N/A"
-    if hours >= 0:
-        return f"{hours}h"
-    return f"Overdue {abs(hours)}h"
 
-
-def get_lifetime_hours(item):
-    raw = item.get("lifetime_hours", DEFAULT_LIFETIME_HOURS)
     try:
-        value = float(raw)
-        return value if value > 0 else DEFAULT_LIFETIME_HOURS
+        hours = float(hours)
     except (TypeError, ValueError):
-        return DEFAULT_LIFETIME_HOURS
+        return "N/A"
+
+    if hours < 0:
+        return "0h"
+
+    return f"{int(hours)}h"
 
 
-def calculate_used_hours(start_date):
-    start_dt = parse_datetime(start_date)
-    if start_dt is None:
-        return 0
+def format_days(days):
+    if days is None:
+        return "N/A"
 
-    elapsed_hours = (datetime.now() - start_dt).total_seconds() / 3600
-    return max(0, math.ceil(elapsed_hours))
+    try:
+        days = float(days)
+    except (TypeError, ValueError):
+        return "N/A"
+
+    if days < 0:
+        return "0 days"
+
+    return f"{int(days)} days"
 
 
-def calculate_remaining_hours(start_date, lifetime_hours):
-    return math.ceil(lifetime_hours - calculate_used_hours(start_date))
+def component_status(component):
+    remaining_hours = component.get("remaining_hours")
+
+    if remaining_hours is None:
+        return "Warning"
+
+    try:
+        remaining_hours = float(remaining_hours)
+    except (TypeError, ValueError):
+        return "Warning"
+
+    if remaining_hours < 0:
+        return "Out of service"
+
+    if remaining_hours <= WARNING_DAYS * 24:
+        return "Warning"
+
+    return "Normal"
+
+
+def system_status(system):
+    remarks = str(system.get("remarks", "") or "").strip().lower()
+    if "not-in-service" in remarks or "out of service" in remarks:
+        return "Out of service"
+
+    components = system.get("components", [])
+    if components:
+        statuses = [component_status(component) for component in components]
+
+        if "Out of service" in statuses:
+            return "Out of service"
+        if "Warning" in statuses:
+            return "Warning"
+        return "Normal"
+
+    remaining_hours = system.get("remaining_hours")
+    remaining_days = system.get("remaining_days")
+
+    if remaining_hours is None or remaining_days is None:
+        return "Warning"
+
+    try:
+        remaining_hours = float(remaining_hours)
+        remaining_days = float(remaining_days)
+    except (TypeError, ValueError):
+        return "Warning"
+
+    if remaining_hours < 0:
+        return "Out of service"
+
+    if remaining_days <= WARNING_DAYS:
+        return "Warning"
+
+    return "Normal"
+
+
+def overdue_badge(_remaining_hours):
+    return ""
 
 
 def status_badge(status):
     normalized = str(status).strip().lower()
 
-    if normalized == "ok":
-        return '<span class="badge badge-ok">OK</span>'
+    if normalized == "normal":
+        return '<span class="badge badge-ok">Normal</span>'
     if normalized == "warning":
         return '<span class="badge badge-warning">Warning</span>'
-    if normalized == "critical":
-        return '<span class="badge badge-critical">Critical</span>'
+    if normalized == "out of service":
+        return '<span class="badge badge-oos">Out of service</span>'
 
     return f'<span class="badge badge-neutral">{status}</span>'
 
 
-def overdue_badge(remaining_hours):
-    if remaining_hours < 0:
-        return f'<span class="pill pill-overdue">OVERDUE {abs(remaining_hours)}h</span>'
-    return ""
-
-
-def room_colors(room_state):
+def room_colors(status):
     base_background = "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)"
     neutral_border = "#d8e0ea"
 
-    if room_state == "OK":
+    if status == "Normal":
         return {
             "background": base_background,
             "border": neutral_border,
             "title": "#0f172a",
-            "badge": '<span class="badge badge-ok">OK</span>',
+            "badge": '<span class="badge badge-ok">Normal</span>',
             "accent": "#16a34a",
         }
 
-    if room_state == "Warning":
+    if status == "Warning":
         return {
             "background": base_background,
             "border": neutral_border,
@@ -124,274 +167,323 @@ def room_colors(room_state):
         "background": base_background,
         "border": neutral_border,
         "title": "#0f172a",
-        "badge": '<span class="badge badge-critical">Critical</span>',
+        "badge": '<span class="badge badge-oos">Out of service</span>',
         "accent": "#dc2626",
     }
 
 
-def iter_room_items(room):
-    room_technician = room.get("technician", "N/A")
+def build_remarks_text(system):
+    parts = []
 
-    for equipment in room.get("equipment", []):
-        equipment_name = equipment.get("equipment_name", "")
-        equipment_type = equipment.get("type", "")
-        equipment_id = equipment.get("equipment_id", "")
+    base_remarks = str(system.get("remarks", "") or "").strip()
+    if base_remarks:
+        parts.append(base_remarks)
 
-        if equipment.get("components"):
-            for component in equipment.get("components", []):
-                yield {
-                    "item_id": component.get("component_id", ""),
-                    "label": f"{equipment_name} / {component.get('component_name', '')}",
-                    "short_name": component.get("component_name", ""),
-                    "group_name": equipment_name,
-                    "room_type": room.get("room_type", ""),
-                    "kind": "component",
-                    "status": normalize_status(component.get("status", "OK")),
-                    "start_date": component.get("start_date", ""),
-                    "lifetime_hours": get_lifetime_hours(component),
-                    "technician": component.get("technician", room_technician),
-                    "last_updated": component.get("last_updated", room.get("last_updated", "")),
-                    "notes": component.get("notes", ""),
-                    "equipment_id": equipment_id,
-                    "component_id": component.get("component_id", ""),
-                    "equipment_type": equipment_type,
-                }
-        else:
-            yield {
-                "item_id": equipment_id,
-                "label": equipment_name,
-                "short_name": equipment_name,
-                "group_name": equipment_name,
-                "room_type": room.get("room_type", ""),
-                "kind": "equipment",
-                "status": normalize_status(equipment.get("status", "OK")),
-                "start_date": equipment.get("start_date", ""),
-                "lifetime_hours": get_lifetime_hours(equipment),
-                "technician": equipment.get("technician", room_technician),
-                "last_updated": equipment.get("last_updated", room.get("last_updated", "")),
-                "notes": equipment.get("notes", ""),
-                "equipment_id": equipment_id,
-                "component_id": None,
-                "equipment_type": equipment_type,
-            }
+    lamp_replacement = str(system.get("lamp_replacement", "") or "").strip() or "N/A"
+    ballast_replacement = str(system.get("ballast_replacement", "") or "").strip() or "N/A"
+
+    parts.append(f"LAMP REPLACEMENT: {lamp_replacement}")
+    parts.append(f"BALLAST REPLACEMENT: {ballast_replacement}")
+    parts.append(f"INITIAL LIFETIME: {INITIAL_LIFETIME_LABEL}")
+
+    return " • ".join(parts)
 
 
-def get_room_auto_status(room):
-    states = [item["status"] for item in iter_room_items(room)]
+def matches_search(system, search_text):
+    if not search_text:
+        return True
 
-    if not states:
-        return "OK"
-    if "Critical" in states:
-        return "Critical"
-    if "Warning" in states:
-        return "Warning"
-    return "OK"
+    query = search_text.lower().strip()
 
+    searchable = " ".join(
+        [
+            str(system.get("building", "")),
+            str(system.get("location", "")),
+            str(system.get("model", "")),
+            build_remarks_text(system),
+            str(system.get("power_rating_label", "")),
+        ]
+    ).lower()
 
-def get_room_state(room):
-    manual = normalize_manual_status(room.get("manual_status", ""))
-    if manual:
-        return manual
-    return get_room_auto_status(room)
-
-
-def get_room_start_date(room):
-    dates = []
-    for item in iter_room_items(room):
-        dt = parse_datetime(item["start_date"])
-        if dt:
-            dates.append(dt)
-
-    if not dates:
-        return "N/A"
-    return min(dates).strftime("%Y-%m-%d %H:%M")
+    return query in searchable
 
 
-def get_room_used_hours(room):
-    values = [calculate_used_hours(item["start_date"]) for item in iter_room_items(room)]
-    if not values:
-        return 0
-    return max(values)
+def system_sort_key(system, mode):
+    status = system_status(system)
+    status_priority = {
+        "Out of service": 0,
+        "Warning": 1,
+        "Normal": 2,
+    }
 
+    building = str(system.get("building", "") or "")
+    location = str(system.get("location", "") or "")
+    remaining_days = system.get("remaining_days")
 
-def get_room_remaining_hours(room):
-    values = [
-        calculate_remaining_hours(item["start_date"], item["lifetime_hours"])
-        for item in iter_room_items(room)
-    ]
-    if not values:
-        return DEFAULT_LIFETIME_HOURS
-    return min(values)
+    try:
+        remaining_days_sort = float(remaining_days) if remaining_days is not None else 999999
+    except (TypeError, ValueError):
+        remaining_days_sort = 999999
 
-
-def get_room_last_updated(room):
-    dates = []
-
-    room_dt = parse_datetime(room.get("last_updated"))
-    if room_dt:
-        dates.append(room_dt)
-
-    for item in iter_room_items(room):
-        dt = parse_datetime(item.get("last_updated"))
-        if dt:
-            dates.append(dt)
-
-    if not dates:
-        return "N/A"
-
-    return max(dates).strftime("%Y-%m-%d %H:%M")
-
-
-def get_room_item_count(room):
-    return len(list(iter_room_items(room)))
-
-
-def get_room_status_counts(room):
-    ok_count = 0
-    warning_count = 0
-    critical_count = 0
-
-    for item in iter_room_items(room):
-        if item["status"] == "OK":
-            ok_count += 1
-        elif item["status"] == "Warning":
-            warning_count += 1
-        elif item["status"] == "Critical":
-            critical_count += 1
-
-    return ok_count, warning_count, critical_count
-
-
-def get_room_overdue_count(room):
-    count = 0
-    for item in iter_room_items(room):
-        remaining = calculate_remaining_hours(item["start_date"], item["lifetime_hours"])
-        if remaining < 0:
-            count += 1
-    return count
-
-
-def category_summary(rooms, room_type):
-    subset = [room for room in rooms if room.get("room_type", "") == room_type]
-    total = len(subset)
-    critical = sum(1 for room in subset if get_room_state(room) == "Critical")
-    warning = sum(1 for room in subset if get_room_state(room) == "Warning")
-    overdue = sum(get_room_overdue_count(room) for room in subset)
-    return total, critical, warning, overdue
-
-
-def room_sort_key(room, mode):
-    state_priority = {"Critical": 0, "Warning": 1, "OK": 2}
-    state = get_room_state(room)
-    remaining = get_room_remaining_hours(room)
-    name = str(room.get("room_name", ""))
+    start_date = system.get("start_date")
 
     if mode == "Urgency":
-        return (state_priority[state], remaining, name)
-    if mode == "Remaining time":
-        return (remaining, state_priority[state], name)
-    if mode == "Last updated":
-        dt = parse_datetime(get_room_last_updated(room))
-        return (dt is None, -(dt.timestamp()) if dt else 0)
-    if mode == "Room name":
-        return (name.lower(),)
-    return (state_priority[state], remaining, name)
+        return (status_priority.get(status, 9), remaining_days_sort, building.lower(), location.lower())
+
+    if mode == "Remaining days":
+        return (remaining_days_sort, status_priority.get(status, 9), building.lower(), location.lower())
+
+    if mode == "Start date":
+        return (start_date is None, start_date or 0, building.lower(), location.lower())
+
+    if mode == "Building":
+        return (building.lower(), location.lower())
+
+    if mode == "Location":
+        return (location.lower(), building.lower())
+
+    return (status_priority.get(status, 9), remaining_days_sort, building.lower(), location.lower())
 
 
-def find_room_by_id(rooms, room_id):
-    for room in rooms:
-        if str(room.get("room_id")) == str(room_id):
-            return room
-    return None
+def kpi_summary(systems):
+    statuses = [system_status(system) for system in systems]
+
+    return {
+        "total_systems": len(systems),
+        "normal_systems": sum(1 for status in statuses if status == "Normal"),
+        "warning_systems": sum(1 for status in statuses if status == "Warning"),
+        "out_of_service_systems": sum(1 for status in statuses if status == "Out of service"),
+        "total_lamps": sum(int(float(system.get("number_of_lamps") or 0)) for system in systems),
+    }
 
 
-def find_room_index_by_id(rooms, room_id):
-    for idx, room in enumerate(rooms):
-        if str(room.get("room_id")) == str(room_id):
-            return idx
-    return None
-
-
-def update_item_in_rooms(rooms, room_id, item_id, new_data):
-    for room in rooms:
-        if str(room.get("room_id")) != str(room_id):
-            continue
-
-        for equipment in room.get("equipment", []):
-            if equipment.get("components"):
-                for component in equipment.get("components", []):
-                    if str(component.get("component_id")) == str(item_id):
-                        component.update(new_data)
-                        return True
-            else:
-                if str(equipment.get("equipment_id")) == str(item_id):
-                    equipment.update(new_data)
-                    return True
-
-    return False
-
-
-def export_rows(rooms):
-    rows = []
-    for room in rooms:
-        auto_status = get_room_auto_status(room)
-        displayed_status = get_room_state(room)
-        manual_status = normalize_manual_status(room.get("manual_status", ""))
-
-        for item in iter_room_items(room):
-            used = calculate_used_hours(item["start_date"])
-            remaining = calculate_remaining_hours(item["start_date"], item["lifetime_hours"])
-            rows.append(
-                {
-                    "room_id": room.get("room_id", ""),
-                    "room_name": room.get("room_name", ""),
-                    "room_type": room.get("room_type", ""),
-                    "room_technician": room.get("technician", ""),
-                    "room_manual_status": manual_status or "Auto",
-                    "room_auto_status": auto_status,
-                    "room_displayed_status": displayed_status,
-                    "item_group": item["group_name"],
-                    "item_name": item["short_name"],
-                    "item_kind": item["kind"],
-                    "item_status": item["status"],
-                    "start_date": item["start_date"],
-                    "used_hours": used,
-                    "remaining_hours": remaining,
-                    "lifetime_hours": item["lifetime_hours"],
-                    "item_technician": item["technician"],
-                    "last_updated": item["last_updated"],
-                    "notes": item["notes"],
-                }
-            )
-    return rows
-
-
-def export_csv_bytes(rooms):
-    rows = export_rows(rooms)
+def export_csv_bytes(systems):
     output = io.StringIO()
 
     fieldnames = [
-        "room_id",
-        "room_name",
-        "room_type",
-        "room_technician",
-        "room_manual_status",
-        "room_auto_status",
-        "room_displayed_status",
-        "item_group",
-        "item_name",
-        "item_kind",
-        "item_status",
+        "system_id",
+        "building",
+        "location",
+        "status",
+        "model",
+        "actual_flow_rate",
+        "current_dosing",
+        "upgrade_dosing",
+        "connection_size_mm",
+        "number_of_lamps",
+        "design_flow_rate",
+        "power_rating_label",
         "start_date",
-        "used_hours",
+        "end_date",
+        "remaining_days",
         "remaining_hours",
-        "lifetime_hours",
-        "item_technician",
-        "last_updated",
-        "notes",
+        "remarks",
     ]
 
     writer = csv.DictWriter(output, fieldnames=fieldnames)
     writer.writeheader()
-    writer.writerows(rows)
+
+    for system in systems:
+        writer.writerow(
+            {
+                "system_id": system.get("system_id"),
+                "building": system.get("building"),
+                "location": system.get("location"),
+                "status": system_status(system),
+                "model": system.get("model"),
+                "actual_flow_rate": system.get("actual_flow_rate"),
+                "current_dosing": system.get("current_dosing"),
+                "upgrade_dosing": system.get("upgrade_dosing"),
+                "connection_size_mm": system.get("connection_size_mm"),
+                "number_of_lamps": system.get("number_of_lamps"),
+                "design_flow_rate": system.get("design_flow_rate"),
+                "power_rating_label": system.get("power_rating_label"),
+                "start_date": format_date(system.get("start_date")),
+                "end_date": format_date(system.get("end_date")),
+                "remaining_days": system.get("remaining_days"),
+                "remaining_hours": system.get("remaining_hours"),
+                "remarks": build_remarks_text(system),
+            }
+        )
+
     return output.getvalue().encode("utf-8")
+
+
+def export_excel_bytes(data, systems):
+    meta = data.get("meta", {})
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = meta.get("sheet_name") or "UV LIST Rev. 01"
+
+    if BADGE_LOGO_FILE.exists():
+        img = XLImage(str(BADGE_LOGO_FILE))
+        img.width = 96
+        img.height = 84
+        ws.add_image(img, "A1")
+
+    if HEADER_LOGO_FILE.exists():
+        img = XLImage(str(HEADER_LOGO_FILE))
+        img.width = 442
+        img.height = 108
+        ws.add_image(img, "T1")
+
+    ws["I1"] = meta.get("organization") or "AQUATIC RESEARCH CENTER"
+    ws["I2"] = meta.get("department") or "MAINTENANCE DEPARTMENT"
+    ws["I3"] = meta.get("title") or "UV STERILIZER SYSTEM MONITORING"
+    ws["Q4"] = "MAX DAYS"
+    ws["R4"] = meta.get("max_days") or 625
+    ws["S4"] = "MAX HOURS"
+    ws["T4"] = meta.get("max_hours") or 15000
+
+    headers = [
+        "No.",
+        "BUILDING",
+        "LOCATION",
+        "MAKE",
+        "MODEL",
+        "Actual Flow Rate (m3/hr)",
+        "CURRENT DOSING (mJ/cm2)",
+        "UPGRADE DOSING (mJ/cm2)",
+        "Connection Size (mm)",
+        "NUMBER OF LAMPS",
+        "DESIGN FLOW RATE M3/H",
+        "LAMP REPLACEMENT",
+        "BALLAST REPLACEMENT",
+        "ELECTRICAL POWER KW/LAMP",
+        "",
+        "START DATE",
+        "END DATE",
+        "REMAINING DAYS",
+        "REMAINING HOURS",
+        "REMAINING DAYS\n(BAR GRAPH)",
+        "REMARKS",
+        "",
+    ]
+
+    for col_index, header in enumerate(headers, start=1):
+        ws.cell(5, col_index).value = header
+
+    thin_gray = Side(style="thin", color="D9E2EC")
+    header_fill = PatternFill("solid", fgColor="0E4F2F")
+    header_font = Font(color="FFFFFF", bold=True, size=10)
+    white_fill = PatternFill("solid", fgColor="FFFFFF")
+    title_font = Font(bold=True, size=16, color="0F172A")
+    subtitle_font = Font(bold=True, size=13, color="0F172A")
+    section_font = Font(bold=True, size=11, color="0F172A")
+
+    ws["I1"].font = subtitle_font
+    ws["I2"].font = subtitle_font
+    ws["I3"].font = title_font
+    ws["Q4"].font = section_font
+    ws["S4"].font = section_font
+
+    for col_index in range(1, 23):
+        cell = ws.cell(5, col_index)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+        cell.border = Border(top=thin_gray, bottom=thin_gray)
+
+    row_index = 6
+    for item_index, system in enumerate(systems, start=1):
+        remarks = build_remarks_text(system)
+
+        row_values = [
+            item_index,
+            system.get("building"),
+            system.get("location"),
+            "",
+            system.get("model"),
+            system.get("actual_flow_rate"),
+            system.get("current_dosing"),
+            system.get("upgrade_dosing"),
+            system.get("connection_size_mm"),
+            int(float(system.get("number_of_lamps") or 0)),
+            system.get("design_flow_rate"),
+            system.get("lamp_replacement"),
+            system.get("ballast_replacement"),
+            system.get("power_rating_label"),
+            "",
+            system.get("start_date"),
+            system.get("end_date"),
+            system.get("remaining_days"),
+            system.get("remaining_hours"),
+            max(float(system.get("remaining_days") or 0), 0),
+            remarks,
+            "",
+        ]
+
+        for col_index, value in enumerate(row_values, start=1):
+            cell = ws.cell(row_index, col_index)
+            cell.value = value
+            cell.fill = white_fill
+            cell.border = Border(bottom=thin_gray)
+            cell.alignment = Alignment(vertical="center", wrap_text=True)
+
+        ws.cell(row_index, 16).number_format = "yyyy-mm-dd"
+        ws.cell(row_index, 17).number_format = "yyyy-mm-dd"
+        row_index += 1
+
+    ws.conditional_formatting.add(
+        f"T6:T{max(row_index - 1, 6)}",
+        DataBarRule(
+            start_type="num",
+            start_value=0,
+            end_type="max",
+            color="5B9BD5",
+            showValue=False,
+        ),
+    )
+
+    widths = {
+        "A": 7,
+        "B": 15,
+        "C": 28,
+        "D": 12,
+        "E": 18,
+        "F": 18,
+        "G": 20,
+        "H": 20,
+        "I": 18,
+        "J": 16,
+        "K": 20,
+        "L": 24,
+        "M": 24,
+        "N": 18,
+        "O": 4,
+        "P": 14,
+        "Q": 14,
+        "R": 15,
+        "S": 16,
+        "T": 18,
+        "U": 40,
+        "V": 4,
+    }
+
+    for col_letter, width in widths.items():
+        ws.column_dimensions[col_letter].width = width
+
+    ws.row_dimensions[1].height = 28
+    ws.row_dimensions[2].height = 24
+    ws.row_dimensions[3].height = 26
+    ws.row_dimensions[5].height = 34
+
+    stream = BytesIO()
+    wb.save(stream)
+    stream.seek(0)
+    return stream.getvalue()
+
+
+def find_system_by_id(systems, system_id):
+    for system in systems:
+        if str(system.get("system_id")) == str(system_id):
+            return system
+    return None
+
+
+def find_system_index_by_id(systems, system_id):
+    for index, system in enumerate(systems):
+        if str(system.get("system_id")) == str(system_id):
+            return index
+    return None

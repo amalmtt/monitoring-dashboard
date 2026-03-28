@@ -2,19 +2,12 @@ from pathlib import Path
 
 PAGE_TITLE = "UV Monitoring Dashboard"
 DATA_FILE = Path("data.json")
-DEFAULT_LIFETIME_HOURS = 6 * 30 * 24  # 4320h
 
-ROOM_TYPE_MAP = {
-    "All": "All",
-    "Broodstock": "broodstock",
-    "Larval": "larval",
-    "Nursery1": "nursery1",
-    "Nursery2": "nursery2",
-}
+WARNING_DAYS = 90
+CARDS_PER_ROW = 5
 
-ROOM_TYPE_SUMMARY = [
-    ("Broodstock", "broodstock"),
-    ("Larval", "larval"),
-    ("Nursery1", "nursery1"),
-    ("Nursery2", "nursery2"),
-]
+INITIAL_LIFETIME_LABEL = "LIFETIME 19M 14000H"
+COMPONENT_LIFETIME_HOURS = 14000
+
+HEADER_LOGO_FILE = Path("agrico_header_logo.png")
+BADGE_LOGO_FILE = Path("agrico_badge_logo.png")

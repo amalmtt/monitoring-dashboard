@@ -2,165 +2,140 @@ from textwrap import dedent
 
 import streamlit as st
 
-from constants import ROOM_TYPE_MAP, ROOM_TYPE_SUMMARY
+from constants import CARDS_PER_ROW
 from helpers import (
-    calculate_remaining_hours,
-    calculate_used_hours,
-    category_summary,
-    export_csv_bytes,
+    build_remarks_text,
+    component_status,
+    export_excel_bytes,
+    format_date,
+    format_days,
     format_hours,
-    get_room_item_count,
-    get_room_last_updated,
-    get_room_overdue_count,
-    get_room_remaining_hours,
-    get_room_start_date,
-    get_room_state,
-    get_room_status_counts,
-    get_room_used_hours,
-    iter_room_items,
-    overdue_badge,
+    format_number,
+    kpi_summary,
+    matches_search,
     room_colors,
-    room_sort_key,
-    short_date,
     status_badge,
+    system_sort_key,
+    system_status,
 )
 
 
-def render_main_area(rooms):
-    search_col, type_col, status_col, tech_col, sort_col = st.columns([1.8, 1.1, 1.0, 1.2, 1.1])
-
-    with search_col:
-        search_text = st.text_input("Search", value="", placeholder="Room, technician, id...")
-
-    selected_group_label = st.radio(
-        "Room group",
-        options=list(ROOM_TYPE_MAP.keys()),
-        horizontal=True,
-        label_visibility="collapsed",
+def _render_kpi_box(label, value):
+    st.markdown(
+        f"""
+        <div class="kpi-box">
+            <div class="kpi-label">{label}</div>
+            <div class="kpi-value">{value}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
 
-    with type_col:
-        selected_state = st.selectbox("Status", ["All", "OK", "Warning", "Critical"], index=0)
 
-    technician_options = ["All"] + sorted({room.get("technician", "N/A") for room in rooms})
+def render_main_area(data):
+    systems = data["systems"]
+
+    search_col, building_col, location_col, status_col, sort_col, export_col = st.columns(
+        [1.5, 1.0, 1.2, 1.0, 1.1, 0.9]
+    )
+
+    with search_col:
+        search_text = st.text_input(
+            "Search",
+            value="",
+            placeholder="Building, location, model, remarks...",
+        )
+
+    building_options = ["All"] + sorted(
+        {system.get("building", "") for system in systems if system.get("building")}
+    )
+    with building_col:
+        selected_building = st.selectbox("Building", building_options, index=0)
+
+    if selected_building == "All":
+        location_pool = systems
+    else:
+        location_pool = [system for system in systems if system.get("building") == selected_building]
+
+    location_options = ["All"] + sorted(
+        {system.get("location", "") for system in location_pool if system.get("location")}
+    )
+    with location_col:
+        selected_location = st.selectbox("Location", location_options, index=0)
+
+    status_options = ["All", "Normal", "Warning", "Out of service"]
     with status_col:
-        selected_technician = st.selectbox("Technician", technician_options, index=0)
+        selected_status = st.selectbox("Status", status_options, index=0)
 
-    with tech_col:
+    with sort_col:
         selected_sort = st.selectbox(
             "Sort by",
-            ["Urgency", "Remaining time", "Last updated", "Room name"],
+            ["Urgency", "Remaining days", "Start date", "Building", "Location"],
             index=0,
         )
 
-    with sort_col:
-        csv_bytes = export_csv_bytes(rooms)
+    filtered_systems = []
+    for system in systems:
+        status = system_status(system)
+
+        matches_building = selected_building == "All" or system.get("building") == selected_building
+        matches_location = selected_location == "All" or system.get("location") == selected_location
+        matches_status = selected_status == "All" or status == selected_status
+        matches_text = matches_search(system, search_text)
+
+        if matches_building and matches_location and matches_status and matches_text:
+            filtered_systems.append(system)
+
+    filtered_systems = sorted(filtered_systems, key=lambda x: system_sort_key(x, selected_sort))
+
+    with export_col:
+        excel_bytes = export_excel_bytes(data, filtered_systems)
         st.download_button(
-            label="Export CSV",
-            data=csv_bytes,
-            file_name="uv_dashboard_export.csv",
-            mime="text/csv",
+            label="Export Excel",
+            data=excel_bytes,
+            file_name="UV Sterilizer System Monitoring.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             use_container_width=True,
         )
 
-    selected_group_value = ROOM_TYPE_MAP[selected_group_label]
+    kpis = kpi_summary(filtered_systems)
 
-    filtered_rooms = []
-    for room in rooms:
-        room_state = get_room_state(room)
-        room_name = str(room.get("room_name", ""))
-        technician = str(room.get("technician", "N/A"))
-        room_type = str(room.get("room_type", ""))
-
-        matches_search = (
-            not search_text
-            or search_text.lower() in room_name.lower()
-            or search_text.lower() in technician.lower()
-            or search_text.lower() in str(room.get("room_id", "")).lower()
-        )
-        matches_type = selected_group_value == "All" or room_type == selected_group_value
-        matches_state = selected_state == "All" or room_state == selected_state
-        matches_technician = selected_technician == "All" or technician == selected_technician
-
-        if matches_search and matches_type and matches_state and matches_technician:
-            filtered_rooms.append(room)
-
-    filtered_rooms = sorted(filtered_rooms, key=lambda r: room_sort_key(r, selected_sort))
-
-    total_rooms = len(filtered_rooms)
-    total_items = sum(get_room_item_count(room) for room in filtered_rooms)
-    warning_rooms = sum(1 for room in filtered_rooms if get_room_state(room) == "Warning")
-    critical_rooms = sum(1 for room in filtered_rooms if get_room_state(room) == "Critical")
-    overdue_items = sum(get_room_overdue_count(room) for room in filtered_rooms)
-
-    m1, m2, m3, m4, m5 = st.columns(5)
-
-    with m1:
-        st.markdown(
-            f'<div class="mini-box"><div class="mini-label">Rooms</div><div class="mini-value">{total_rooms}</div></div>',
-            unsafe_allow_html=True,
-        )
-    with m2:
-        st.markdown(
-            f'<div class="mini-box"><div class="mini-label">Tracked items</div><div class="mini-value">{total_items}</div></div>',
-            unsafe_allow_html=True,
-        )
-    with m3:
-        st.markdown(
-            f'<div class="mini-box"><div class="mini-label">Warning rooms</div><div class="mini-value">{warning_rooms}</div></div>',
-            unsafe_allow_html=True,
-        )
-    with m4:
-        st.markdown(
-            f'<div class="mini-box"><div class="mini-label">Critical rooms</div><div class="mini-value">{critical_rooms}</div></div>',
-            unsafe_allow_html=True,
-        )
-    with m5:
-        st.markdown(
-            f'<div class="mini-box"><div class="mini-label">Overdue items</div><div class="mini-value">{overdue_items}</div></div>',
-            unsafe_allow_html=True,
-        )
+    k1, k2, k3, k4, k5 = st.columns(5)
+    with k1:
+        _render_kpi_box("Systems", kpis["total_systems"])
+    with k2:
+        _render_kpi_box("Normal", kpis["normal_systems"])
+    with k3:
+        _render_kpi_box("Warning", kpis["warning_systems"])
+    with k4:
+        _render_kpi_box("Out of service", kpis["out_of_service_systems"])
+    with k5:
+        _render_kpi_box("Total lamps", kpis["total_lamps"])
 
     st.write("")
 
-    summary_columns = st.columns(4)
-    for col, (label, key) in zip(summary_columns, ROOM_TYPE_SUMMARY):
-        total, critical, warning, overdue = category_summary(filtered_rooms, key)
-        with col:
-            box_html = (
-                f'<div class="category-box">'
-                f'<div class="category-title">{label}</div>'
-                f'<div class="category-line">{total} rooms</div>'
-                f'<div class="category-line">{critical} critical • {warning} warning</div>'
-                f'<div class="category-line">{overdue} overdue items</div>'
-                f'</div>'
-            )
-            st.markdown(box_html, unsafe_allow_html=True)
-
-    st.write("")
-
-    cards_per_row = 5
-    rows = [filtered_rooms[i:i + cards_per_row] for i in range(0, len(filtered_rooms), cards_per_row)]
+    rows = [filtered_systems[i:i + CARDS_PER_ROW] for i in range(0, len(filtered_systems), CARDS_PER_ROW)]
 
     for row in rows:
-        cols = st.columns(cards_per_row)
+        cols = st.columns(CARDS_PER_ROW)
 
-        for i, room in enumerate(row):
-            room_state = get_room_state(room)
-            colors = room_colors(room_state)
-            room_used_num = get_room_used_hours(room)
-            room_remaining_num = get_room_remaining_hours(room)
-            room_used = format_hours(room_used_num)
-            room_remaining = format_hours(room_remaining_num)
-            room_last_updated = get_room_last_updated(room)
-            room_last_updated_short = short_date(room_last_updated)
-            ok_count, warning_count, critical_count = get_room_status_counts(room)
+        for idx, system in enumerate(row):
+            status = system_status(system)
+            colors = room_colors(status)
 
-            card_key = f"card_{room['room_id']}".replace("-", "_")
-            open_key = f"open_{room['room_id']}".replace("-", "_")
-            details_key = f"details_{room['room_id']}".replace("-", "_")
+            building = system.get("building") or "N/A"
+            location = system.get("location") or "N/A"
+            model = system.get("model") or "N/A"
 
-            with cols[i]:
+            remaining_hours = system.get("remaining_hours")
+            remaining_days = system.get("remaining_days")
+            lamp_count = int(float(system.get("number_of_lamps") or 0))
+
+            card_key = f'card_{system.get("system_id", idx)}'
+            open_key = f'open_{system.get("system_id", idx)}'
+            details_key = f'details_{system.get("system_id", idx)}'
+
+            with cols[idx]:
                 st.markdown(
                     dedent(
                         f"""
@@ -169,15 +144,14 @@ def render_main_area(rooms):
                                 background: {colors["background"]};
                                 border: 1px solid {colors["border"]};
                                 border-radius: 18px;
-                                padding: 16px 14px 22px 16px;
-                                height: 350px;
-                                margin-bottom: 14px;
+                                padding: 16px 14px 24px 16px;
+                                height: 360px;
+                                margin-bottom: 18px;
                                 box-sizing: border-box;
                                 display: flex;
                                 flex-direction: column;
-                                align-items: flex-start;
+                                align-items: stretch;
                                 justify-content: flex-start;
-                                gap: 0.14rem;
                                 box-shadow:
                                     inset 6px 0 0 {colors["accent"]},
                                     0 8px 18px rgba(15, 23, 42, 0.06);
@@ -191,17 +165,17 @@ def render_main_area(rooms):
                                 min-height: 0 !important;
                                 box-shadow: none !important;
                                 text-align: left !important;
-                                font-size: 1.02rem !important;
-                                font-weight: 700 !important;
+                                font-size: 1.18rem !important;
+                                font-weight: 900 !important;
                                 color: {colors["title"]} !important;
                                 opacity: 1 !important;
+                                line-height: 1.15 !important;
                             }}
 
                             .st-key-{open_key} button:hover {{
                                 border: none !important;
                                 background: transparent !important;
                                 box-shadow: none !important;
-                                text-align: left !important;
                                 color: {colors["title"]} !important;
                                 opacity: 1 !important;
                                 text-decoration: none !important;
@@ -234,95 +208,142 @@ def render_main_area(rooms):
                 card = st.container(key=card_key)
 
                 with card:
-                    title_col, info_col = st.columns([5, 1])
+                    top_left, top_mid, top_right = st.columns([5.0, 2.2, 0.8])
 
-                    with title_col:
-                        if st.button(room["room_name"], key=open_key):
-                            st.session_state.selected_room_id = room["room_id"]
-                            items = list(iter_room_items(room))
-                            st.session_state.selected_item_id = items[0]["item_id"] if items else None
+                    with top_left:
+                        if st.button(location, key=open_key):
+                            st.session_state.selected_system_id = system.get("system_id")
                             st.rerun()
 
-                    with info_col:
+                    with top_mid:
+                        st.markdown(
+                            f'<div style="display:flex; justify-content:flex-end; margin-top:0.10rem;">{status_badge(status)}</div>',
+                            unsafe_allow_html=True,
+                        )
+
+                    with top_right:
                         with st.popover("ⓘ", key=details_key, type="tertiary"):
-                            st.markdown(status_badge(room_state), unsafe_allow_html=True)
+                            d1, d2, d3, d4 = st.columns(4)
 
-                            p1, p2, p3, p4, p5, p6 = st.columns(6)
-
-                            p1.markdown(
-                                f'<div class="mini-box"><div class="mini-label">Type</div><div class="mini-value">{room.get("room_type", "")}</div></div>',
+                            d1.markdown(
+                                f'<div class="mini-box"><div class="mini-label">Building</div><div class="mini-value">{building}</div></div>',
                                 unsafe_allow_html=True,
                             )
-                            p2.markdown(
-                                f'<div class="mini-box"><div class="mini-label">Technician</div><div class="mini-value">{room.get("technician", "N/A")}</div></div>',
+                            d2.markdown(
+                                f'<div class="mini-box"><div class="mini-label">Location</div><div class="mini-value">{location}</div></div>',
                                 unsafe_allow_html=True,
                             )
-                            p3.markdown(
-                                f'<div class="mini-box"><div class="mini-label">Start date</div><div class="mini-value">{get_room_start_date(room)}</div></div>',
+                            d3.markdown(
+                                f'<div class="mini-box"><div class="mini-label">Model</div><div class="mini-value">{model}</div></div>',
                                 unsafe_allow_html=True,
                             )
-                            p4.markdown(
-                                f'<div class="mini-box"><div class="mini-label">Used</div><div class="mini-value">{room_used}</div></div>',
-                                unsafe_allow_html=True,
-                            )
-                            p5.markdown(
-                                f'<div class="mini-box"><div class="mini-label">Remaining</div><div class="mini-value">{room_remaining}</div></div>',
-                                unsafe_allow_html=True,
-                            )
-                            p6.markdown(
-                                f'<div class="mini-box"><div class="mini-label">Last updated</div><div class="mini-value">{room_last_updated}</div></div>',
+                            d4.markdown(
+                                f'<div class="mini-box"><div class="mini-label">Power / Lamp</div><div class="mini-value">{system.get("power_rating_label") or "N/A"}</div></div>',
                                 unsafe_allow_html=True,
                             )
 
                             st.write("")
 
-                            grouped = {}
-                            for item in iter_room_items(room):
-                                group = item["group_name"]
-                                grouped.setdefault(group, []).append(item)
+                            d5, d6, d7, d8 = st.columns(4)
+                            d5.markdown(
+                                f'<div class="mini-box"><div class="mini-label">Actual Flow Rate</div><div class="mini-value">{format_number(system.get("actual_flow_rate"))} m³/h</div></div>',
+                                unsafe_allow_html=True,
+                            )
+                            d6.markdown(
+                                f'<div class="mini-box"><div class="mini-label">Current Dosing</div><div class="mini-value">{format_number(system.get("current_dosing"))} mJ/cm²</div></div>',
+                                unsafe_allow_html=True,
+                            )
+                            d7.markdown(
+                                f'<div class="mini-box"><div class="mini-label">Upgrade Dosing</div><div class="mini-value">{format_number(system.get("upgrade_dosing"))} mJ/cm²</div></div>',
+                                unsafe_allow_html=True,
+                            )
+                            d8.markdown(
+                                f'<div class="mini-box"><div class="mini-label">Connection Size</div><div class="mini-value">{format_number(system.get("connection_size_mm"))} mm</div></div>',
+                                unsafe_allow_html=True,
+                            )
 
-                            for group_name, items in grouped.items():
-                                st.markdown(f'<div class="group-title">{group_name}</div>', unsafe_allow_html=True)
-                                for item in items:
-                                    used = format_hours(calculate_used_hours(item["start_date"]))
-                                    remaining_num = calculate_remaining_hours(item["start_date"], item["lifetime_hours"])
-                                    remaining = format_hours(remaining_num)
+                            st.write("")
 
-                                    item_html = (
-                                        f'<div class="item-box">'
-                                        f'<div class="item-name">{item["short_name"]}</div>'
-                                        f'<div style="margin-bottom: 0.45rem;">{status_badge(item["status"])}</div>'
-                                        f'{overdue_badge(remaining_num)}'
-                                        f'<div><b>Start date:</b> {item["start_date"]}</div>'
-                                        f'<div><b>Used:</b> {used}</div>'
-                                        f'<div><b>Remaining:</b> {remaining}</div>'
-                                        f'<div><b>Technician:</b> {item["technician"]}</div>'
-                                        f'<div><b>Last updated:</b> {item["last_updated"]}</div>'
-                                        f'<div><b>Notes:</b> {item["notes"]}</div>'
-                                        f'</div>'
-                                    )
-                                    st.markdown(item_html, unsafe_allow_html=True)
+                            d9, d10, d11, d12 = st.columns(4)
+                            d9.markdown(
+                                f'<div class="mini-box"><div class="mini-label">Number of Lamps</div><div class="mini-value">{lamp_count}</div></div>',
+                                unsafe_allow_html=True,
+                            )
+                            d10.markdown(
+                                f'<div class="mini-box"><div class="mini-label">Design Flow Rate</div><div class="mini-value">{format_number(system.get("design_flow_rate"))} m³/h</div></div>',
+                                unsafe_allow_html=True,
+                            )
+                            d11.markdown(
+                                f'<div class="mini-box"><div class="mini-label">Start Date</div><div class="mini-value">{format_date(system.get("start_date"))}</div></div>',
+                                unsafe_allow_html=True,
+                            )
+                            d12.markdown(
+                                f'<div class="mini-box"><div class="mini-label">End Date</div><div class="mini-value">{format_date(system.get("end_date"))}</div></div>',
+                                unsafe_allow_html=True,
+                            )
 
-                    counts_html = (
-                        f'<div class="counter-row">'
-                        f'<span class="counter-pill">OK {ok_count}</span>'
-                        f'<span class="counter-pill">WARN {warning_count}</span>'
-                        f'<span class="counter-pill">CRIT {critical_count}</span>'
-                        f'</div>'
+                            st.write("")
+
+                            detail_html = (
+                                f'<div class="item-box">'
+                                f'<div class="item-name">{location}</div>'
+                                f'<div style="margin-bottom:0.45rem;">{status_badge(status)}</div>'
+                                f'<div><b>Building:</b> {building}</div>'
+                                f'<div><b>Location:</b> {location}</div>'
+                                f'<div><b>Remarks:</b> {build_remarks_text(system)}</div>'
+                                f'</div>'
+                            )
+                            st.markdown(detail_html, unsafe_allow_html=True)
+
+                            st.markdown('<div class="section-title">Components</div>', unsafe_allow_html=True)
+
+                            components = system.get("components", [])
+                            for comp_index in range(0, len(components), 2):
+                                comp_row = components[comp_index:comp_index + 2]
+                                comp_cols = st.columns(2)
+
+                                for row_idx, component in enumerate(comp_row):
+                                    with comp_cols[row_idx]:
+                                        component_html = (
+                                            f'<div class="item-box">'
+                                            f'<div class="item-name">{component.get("component_name")}</div>'
+                                            f'<div style="margin-bottom:0.45rem;">{status_badge(component_status(component))}</div>'
+                                            f'<div><b>Lifetime:</b> {component.get("lifetime_label")}</div>'
+                                            f'<div><b>Start:</b> {format_date(component.get("start_date"))}</div>'
+                                            f'<div><b>End:</b> {format_date(component.get("end_date"))}</div>'
+                                            f'<div><b>Remaining:</b> {format_days(component.get("remaining_days"))} • {format_hours(component.get("remaining_hours"))}</div>'
+                                            f'<div><b>Replacement:</b> {component.get("replacement_note") or "Initial installation"}</div>'
+                                            f'</div>'
+                                        )
+                                        st.markdown(component_html, unsafe_allow_html=True)
+
+                    st.markdown(
+                        f'<div class="card-subtitle"><b>Building:</b> {building}</div>',
+                        unsafe_allow_html=True,
                     )
 
-                    details_html = (
-                        f'<div class="card-details">'
-                        f'<div>{colors["badge"]} {overdue_badge(room_remaining_num)}</div>'
-                        f'{counts_html}'
-                        f'<div class="card-line"><b>Type:</b> {room.get("room_type", "")}</div>'
-                        f'<div class="card-line"><b>Technician:</b> {room.get("technician", "N/A")}</div>'
-                        f'<div class="card-line"><b>Used:</b> {room_used}</div>'
-                        f'<div class="card-line"><b>Remaining:</b> {room_remaining}</div>'
-                        f'<div class="card-line"><b>Last updated:</b> {room_last_updated_short}</div>'
-                        f'</div>'
+                    st.markdown(
+                        f"""
+                        <div class="counter-row">
+                            <span class="counter-pill">{system.get("power_rating_label") or "N/A"}</span>
+                            <span class="counter-pill">LAMPS {lamp_count}</span>
+                            <span class="counter-pill">{format_number(system.get("actual_flow_rate"))} m³/h</span>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
                     )
-                    st.markdown(details_html, unsafe_allow_html=True)
 
-    if not filtered_rooms:
-        st.info("No rooms match the current filters.")
+                    st.markdown(
+                        f"""
+                        <div class="card-details">
+                            <div class="card-line"><b>Model:</b> {model}</div>
+                            <div class="card-line"><b>Remaining:</b> {format_days(remaining_days)} • {format_hours(remaining_hours)}</div>
+                            <div class="card-line"><b>Start:</b> {format_date(system.get("start_date"))}</div>
+                            <div class="card-line"><b>End:</b> {format_date(system.get("end_date"))}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+    if not filtered_systems:
+        st.info("No systems match the current filters.")
