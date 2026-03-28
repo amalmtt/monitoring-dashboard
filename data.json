@@ -25,10 +25,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-01-27",
-      "end_date": "2026-10-14",
-      "remaining_days": 200,
-      "remaining_hours": 4800,
-      "remarks": ""
+      "end_date": "2026-09-02",
+      "remaining_days": 157,
+      "remaining_hours": 3788,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 2,
@@ -47,10 +48,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-01-27",
-      "end_date": "2026-10-14",
-      "remaining_days": 200,
-      "remaining_hours": 4800,
-      "remarks": ""
+      "end_date": "2026-09-02",
+      "remaining_days": 157,
+      "remaining_hours": 3788,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 3,
@@ -69,10 +71,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-01-28",
-      "end_date": "2026-10-15",
-      "remaining_days": 201,
-      "remaining_hours": 4824,
-      "remarks": ""
+      "end_date": "2026-09-03",
+      "remaining_days": 158,
+      "remaining_hours": 3812,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 4,
@@ -91,10 +94,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-01-29",
-      "end_date": "2026-10-16",
-      "remaining_days": 202,
-      "remaining_hours": 4848,
-      "remarks": ""
+      "end_date": "2026-09-04",
+      "remaining_days": 159,
+      "remaining_hours": 3836,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 5,
@@ -113,10 +117,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-01-28",
-      "end_date": "2026-10-15",
-      "remaining_days": 201,
-      "remaining_hours": 4824,
-      "remarks": ""
+      "end_date": "2026-09-03",
+      "remaining_days": 158,
+      "remaining_hours": 3812,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 6,
@@ -135,10 +140,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-01-28",
-      "end_date": "2026-10-15",
-      "remaining_days": 201,
-      "remaining_hours": 4824,
-      "remarks": ""
+      "end_date": "2026-09-03",
+      "remaining_days": 158,
+      "remaining_hours": 3812,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 7,
@@ -157,10 +163,13 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-05-28",
-      "end_date": "2027-02-12",
-      "remaining_days": 321,
-      "remaining_hours": 7704,
-      "remarks": ""
+      "end_date": "2027-01-01",
+      "remaining_days": 278,
+      "remaining_hours": 6692,
+      "remarks": "",
+      "component_replacements": {
+        "Lamp 2": "2025-11-23"
+      }
     },
     {
       "system_id": 8,
@@ -179,10 +188,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-05-28",
-      "end_date": "2027-02-12",
-      "remaining_days": 321,
-      "remaining_hours": 7704,
-      "remarks": ""
+      "end_date": "2027-01-01",
+      "remaining_days": 278,
+      "remaining_hours": 6692,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 9,
@@ -201,10 +211,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-05-28",
-      "end_date": "2027-02-12",
-      "remaining_days": 321,
-      "remaining_hours": 7704,
-      "remarks": ""
+      "end_date": "2027-01-01",
+      "remaining_days": 278,
+      "remaining_hours": 6692,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 10,
@@ -223,10 +234,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-01-01",
-      "end_date": "2025-09-17",
-      "remaining_days": -192,
-      "remaining_hours": -4608,
-      "remarks": "Not-in-service"
+      "end_date": "2025-08-06",
+      "remaining_days": 0,
+      "remaining_hours": -5620,
+      "remarks": "Not-in-service",
+      "component_replacements": {}
     },
     {
       "system_id": 11,
@@ -245,10 +257,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-01-01",
-      "end_date": "2025-09-17",
-      "remaining_days": -192,
-      "remaining_hours": -4608,
-      "remarks": "Not-in-service"
+      "end_date": "2025-08-06",
+      "remaining_days": 0,
+      "remaining_hours": -5620,
+      "remarks": "Not-in-service",
+      "component_replacements": {}
     },
     {
       "system_id": 12,
@@ -267,10 +280,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-01-01",
-      "end_date": "2025-09-17",
-      "remaining_days": -192,
-      "remaining_hours": -4608,
-      "remarks": "Not-in-service"
+      "end_date": "2025-08-06",
+      "remaining_days": 0,
+      "remaining_hours": -5620,
+      "remarks": "Not-in-service",
+      "component_replacements": {}
     },
     {
       "system_id": 13,
@@ -289,10 +303,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-01-01",
-      "end_date": "2025-09-17",
-      "remaining_days": -192,
-      "remaining_hours": -4608,
-      "remarks": "Not-in-service"
+      "end_date": "2025-08-06",
+      "remaining_days": 0,
+      "remaining_hours": -5620,
+      "remarks": "Not-in-service",
+      "component_replacements": {}
     },
     {
       "system_id": 14,
@@ -311,10 +326,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-01-01",
-      "end_date": "2025-09-17",
-      "remaining_days": -192,
-      "remaining_hours": -4608,
-      "remarks": "Not-in-service"
+      "end_date": "2025-08-06",
+      "remaining_days": 0,
+      "remaining_hours": -5620,
+      "remarks": "Not-in-service",
+      "component_replacements": {}
     },
     {
       "system_id": 15,
@@ -333,10 +349,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-01-01",
-      "end_date": "2025-09-17",
-      "remaining_days": -192,
-      "remaining_hours": -4608,
-      "remarks": "Not-in-service"
+      "end_date": "2025-08-06",
+      "remaining_days": 0,
+      "remaining_hours": -5620,
+      "remarks": "Not-in-service",
+      "component_replacements": {}
     },
     {
       "system_id": 16,
@@ -355,10 +372,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-01-01",
-      "end_date": "2025-09-17",
-      "remaining_days": -192,
-      "remaining_hours": -4608,
-      "remarks": "Not-in-service"
+      "end_date": "2025-08-06",
+      "remaining_days": 0,
+      "remaining_hours": -5620,
+      "remarks": "Not-in-service",
+      "component_replacements": {}
     },
     {
       "system_id": 17,
@@ -377,10 +395,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-06-30",
-      "end_date": "2027-03-17",
-      "remaining_days": 354,
-      "remaining_hours": 8496,
-      "remarks": ""
+      "end_date": "2027-02-03",
+      "remaining_days": 311,
+      "remaining_hours": 7484,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 18,
@@ -399,10 +418,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-07-05",
-      "end_date": "2027-03-22",
-      "remaining_days": 359,
-      "remaining_hours": 8616,
-      "remarks": ""
+      "end_date": "2027-02-08",
+      "remaining_days": 316,
+      "remaining_hours": 7604,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 19,
@@ -421,10 +441,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-07-19",
-      "end_date": "2027-04-05",
-      "remaining_days": 373,
-      "remaining_hours": 8952,
-      "remarks": ""
+      "end_date": "2027-02-22",
+      "remaining_days": 330,
+      "remaining_hours": 7940,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 20,
@@ -443,10 +464,11 @@
       "power_rating_raw": 270.0,
       "power_rating_label": "300W",
       "start_date": "2025-08-14",
-      "end_date": "2027-05-01",
-      "remaining_days": 399,
-      "remaining_hours": 9576,
-      "remarks": ""
+      "end_date": "2027-03-20",
+      "remaining_days": 356,
+      "remaining_hours": 8564,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 21,
@@ -460,15 +482,18 @@
       "connection_size_mm": 250.0,
       "number_of_lamps": 4.0,
       "design_flow_rate": 106.0,
-      "lamp_replacement": "",
+      "lamp_replacement": "Lamp 3 replaced (03/19/26)",
       "ballast_replacement": "",
       "power_rating_raw": 270.0,
       "power_rating_label": "300W",
-      "start_date": "2024-12-09",
-      "end_date": "2026-08-26",
-      "remaining_days": 151,
-      "remaining_hours": 3624,
-      "remarks": ""
+      "start_date": "2026-03-04",
+      "end_date": "2027-10-08",
+      "remaining_days": 558,
+      "remaining_hours": 13412,
+      "remarks": "",
+      "component_replacements": {
+        "Lamp 3": "2026-03-19"
+      }
     },
     {
       "system_id": 22,
@@ -487,10 +512,11 @@
       "power_rating_raw": 270.0,
       "power_rating_label": "300W",
       "start_date": "2024-12-14",
-      "end_date": "2026-08-31",
-      "remaining_days": 156,
-      "remaining_hours": 3744,
-      "remarks": ""
+      "end_date": "2026-07-20",
+      "remaining_days": 113,
+      "remaining_hours": 2732,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 23,
@@ -509,10 +535,11 @@
       "power_rating_raw": 270.0,
       "power_rating_label": "300W",
       "start_date": "2025-07-17",
-      "end_date": "2027-04-03",
-      "remaining_days": 371,
-      "remaining_hours": 8904,
-      "remarks": ""
+      "end_date": "2027-02-20",
+      "remaining_days": 328,
+      "remaining_hours": 7892,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 24,
@@ -531,10 +558,11 @@
       "power_rating_raw": 270.0,
       "power_rating_label": "300W",
       "start_date": "2024-12-28",
-      "end_date": "2026-09-14",
-      "remaining_days": 170,
-      "remaining_hours": 4080,
-      "remarks": ""
+      "end_date": "2026-08-03",
+      "remaining_days": 127,
+      "remaining_hours": 3068,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 25,
@@ -553,10 +581,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-01-01",
-      "end_date": "2025-09-17",
-      "remaining_days": -192,
-      "remaining_hours": -4608,
-      "remarks": "Not-in-service"
+      "end_date": "2025-08-06",
+      "remaining_days": 0,
+      "remaining_hours": -5620,
+      "remarks": "Not-in-service",
+      "component_replacements": {}
     },
     {
       "system_id": 26,
@@ -575,10 +604,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-01-01",
-      "end_date": "2025-09-17",
-      "remaining_days": -192,
-      "remaining_hours": -4608,
-      "remarks": "Not-in-service"
+      "end_date": "2025-08-06",
+      "remaining_days": 0,
+      "remaining_hours": -5620,
+      "remarks": "Not-in-service",
+      "component_replacements": {}
     },
     {
       "system_id": 27,
@@ -597,10 +627,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-10-16",
-      "end_date": "2026-07-03",
-      "remaining_days": 97,
-      "remaining_hours": 2328,
-      "remarks": ""
+      "end_date": "2026-05-22",
+      "remaining_days": 54,
+      "remaining_hours": 1316,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 28,
@@ -619,10 +650,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-10-16",
-      "end_date": "2026-07-03",
-      "remaining_days": 97,
-      "remaining_hours": 2328,
-      "remarks": ""
+      "end_date": "2026-05-22",
+      "remaining_days": 54,
+      "remaining_hours": 1316,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 29,
@@ -641,10 +673,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-10-16",
-      "end_date": "2026-07-03",
-      "remaining_days": 97,
-      "remaining_hours": 2328,
-      "remarks": ""
+      "end_date": "2026-05-22",
+      "remaining_days": 54,
+      "remaining_hours": 1316,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 30,
@@ -663,10 +696,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-01-29",
-      "end_date": "2026-10-16",
-      "remaining_days": 202,
-      "remaining_hours": 4848,
-      "remarks": ""
+      "end_date": "2026-09-04",
+      "remaining_days": 159,
+      "remaining_hours": 3836,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 31,
@@ -685,10 +719,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-01-29",
-      "end_date": "2026-10-16",
-      "remaining_days": 202,
-      "remaining_hours": 4848,
-      "remarks": ""
+      "end_date": "2026-09-04",
+      "remaining_days": 159,
+      "remaining_hours": 3836,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 32,
@@ -707,10 +742,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-11-07",
-      "end_date": "2026-07-25",
-      "remaining_days": 119,
-      "remaining_hours": 2856,
-      "remarks": ""
+      "end_date": "2026-06-13",
+      "remaining_days": 76,
+      "remaining_hours": 1844,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 33,
@@ -729,10 +765,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-11-07",
-      "end_date": "2026-07-25",
-      "remaining_days": 119,
-      "remaining_hours": 2856,
-      "remarks": ""
+      "end_date": "2026-06-13",
+      "remaining_days": 76,
+      "remaining_hours": 1844,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 34,
@@ -751,10 +788,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-11-07",
-      "end_date": "2026-07-25",
-      "remaining_days": 119,
-      "remaining_hours": 2856,
-      "remarks": ""
+      "end_date": "2026-06-13",
+      "remaining_days": 76,
+      "remaining_hours": 1844,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 35,
@@ -773,10 +811,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-11-07",
-      "end_date": "2026-07-25",
-      "remaining_days": 119,
-      "remaining_hours": 2856,
-      "remarks": "?"
+      "end_date": "2026-06-13",
+      "remaining_days": 76,
+      "remaining_hours": 1844,
+      "remarks": "?",
+      "component_replacements": {}
     },
     {
       "system_id": 36,
@@ -795,10 +834,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-11-07",
-      "end_date": "2026-07-25",
-      "remaining_days": 119,
-      "remaining_hours": 2856,
-      "remarks": "?"
+      "end_date": "2026-06-13",
+      "remaining_days": 76,
+      "remaining_hours": 1844,
+      "remarks": "?",
+      "component_replacements": {}
     },
     {
       "system_id": 37,
@@ -817,10 +857,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-11-07",
-      "end_date": "2026-07-25",
-      "remaining_days": 119,
-      "remaining_hours": 2856,
-      "remarks": ""
+      "end_date": "2026-06-13",
+      "remaining_days": 76,
+      "remaining_hours": 1844,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 38,
@@ -839,10 +880,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-11-07",
-      "end_date": "2026-07-25",
-      "remaining_days": 119,
-      "remaining_hours": 2856,
-      "remarks": ""
+      "end_date": "2026-06-13",
+      "remaining_days": 76,
+      "remaining_hours": 1844,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 39,
@@ -861,10 +903,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-11-07",
-      "end_date": "2026-07-25",
-      "remaining_days": 119,
-      "remaining_hours": 2856,
-      "remarks": ""
+      "end_date": "2026-06-13",
+      "remaining_days": 76,
+      "remaining_hours": 1844,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 40,
@@ -883,10 +926,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-01-01",
-      "end_date": "2025-09-17",
-      "remaining_days": -192,
-      "remaining_hours": -4608,
-      "remarks": "Not-in-service"
+      "end_date": "2025-08-06",
+      "remaining_days": 0,
+      "remaining_hours": -5620,
+      "remarks": "Not-in-service",
+      "component_replacements": {}
     },
     {
       "system_id": 41,
@@ -905,10 +949,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-01-01",
-      "end_date": "2025-09-17",
-      "remaining_days": -192,
-      "remaining_hours": -4608,
-      "remarks": "Not-in-service"
+      "end_date": "2025-08-06",
+      "remaining_days": 0,
+      "remaining_hours": -5620,
+      "remarks": "Not-in-service",
+      "component_replacements": {}
     },
     {
       "system_id": 42,
@@ -927,10 +972,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2025-04-24",
-      "end_date": "2027-01-09",
-      "remaining_days": 287,
-      "remaining_hours": 6888,
-      "remarks": ""
+      "end_date": "2026-11-28",
+      "remaining_days": 244,
+      "remaining_hours": 5876,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 43,
@@ -949,10 +995,11 @@
       "power_rating_raw": 270.0,
       "power_rating_label": "300W",
       "start_date": "2025-10-28",
-      "end_date": "2027-07-15",
-      "remaining_days": 474,
-      "remaining_hours": 11376,
-      "remarks": ""
+      "end_date": "2027-06-03",
+      "remaining_days": 431,
+      "remaining_hours": 10364,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 44,
@@ -971,10 +1018,11 @@
       "power_rating_raw": 270.0,
       "power_rating_label": "300W",
       "start_date": "2025-10-28",
-      "end_date": "2027-07-15",
-      "remaining_days": 474,
-      "remaining_hours": 11376,
-      "remarks": ""
+      "end_date": "2027-06-03",
+      "remaining_days": 431,
+      "remaining_hours": 10364,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 45,
@@ -993,10 +1041,11 @@
       "power_rating_raw": 270.0,
       "power_rating_label": "300W",
       "start_date": "2025-10-28",
-      "end_date": "2027-07-15",
-      "remaining_days": 474,
-      "remaining_hours": 11376,
-      "remarks": ""
+      "end_date": "2027-06-03",
+      "remaining_days": 431,
+      "remaining_hours": 10364,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 46,
@@ -1015,10 +1064,11 @@
       "power_rating_raw": 270.0,
       "power_rating_label": "300W",
       "start_date": "2025-10-28",
-      "end_date": "2027-07-15",
-      "remaining_days": 474,
-      "remaining_hours": 11376,
-      "remarks": ""
+      "end_date": "2027-06-03",
+      "remaining_days": 431,
+      "remaining_hours": 10364,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 47,
@@ -1037,10 +1087,11 @@
       "power_rating_raw": 270.0,
       "power_rating_label": "300W",
       "start_date": "2025-10-28",
-      "end_date": "2027-07-15",
-      "remaining_days": 474,
-      "remaining_hours": 11376,
-      "remarks": ""
+      "end_date": "2027-06-03",
+      "remaining_days": 431,
+      "remaining_hours": 10364,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 48,
@@ -1059,10 +1110,11 @@
       "power_rating_raw": 270.0,
       "power_rating_label": "300W",
       "start_date": "2025-10-30",
-      "end_date": "2027-07-17",
-      "remaining_days": 476,
-      "remaining_hours": 11424,
-      "remarks": ""
+      "end_date": "2027-06-05",
+      "remaining_days": 433,
+      "remaining_hours": 10412,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 49,
@@ -1081,10 +1133,11 @@
       "power_rating_raw": 270.0,
       "power_rating_label": "300W",
       "start_date": "2025-10-30",
-      "end_date": "2027-07-17",
-      "remaining_days": 476,
-      "remaining_hours": 11424,
-      "remarks": ""
+      "end_date": "2027-06-05",
+      "remaining_days": 433,
+      "remaining_hours": 10412,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 50,
@@ -1103,10 +1156,11 @@
       "power_rating_raw": 500.0,
       "power_rating_label": "500W",
       "start_date": "2026-02-16",
-      "end_date": "2027-11-03",
-      "remaining_days": 585,
-      "remaining_hours": 14040,
-      "remarks": ""
+      "end_date": "2027-09-22",
+      "remaining_days": 542,
+      "remaining_hours": 13028,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 51,
@@ -1125,10 +1179,11 @@
       "power_rating_raw": 87.0,
       "power_rating_label": "87W",
       "start_date": "2024-12-14",
-      "end_date": "2026-08-31",
-      "remaining_days": 156,
-      "remaining_hours": 3744,
-      "remarks": ""
+      "end_date": "2026-07-20",
+      "remaining_days": 113,
+      "remaining_hours": 2732,
+      "remarks": "",
+      "component_replacements": {}
     },
     {
       "system_id": 52,
@@ -1147,10 +1202,11 @@
       "power_rating_raw": null,
       "power_rating_label": "Unknown",
       "start_date": "2025-01-30",
-      "end_date": "2026-10-17",
-      "remaining_days": 203,
-      "remaining_hours": 4872,
-      "remarks": ""
+      "end_date": "2026-09-05",
+      "remaining_days": 160,
+      "remaining_hours": 3860,
+      "remarks": "",
+      "component_replacements": {}
     }
   ]
 }

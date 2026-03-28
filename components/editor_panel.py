@@ -1,9 +1,13 @@
+from datetime import date
+
 import streamlit as st
 
 from constants import INITIAL_LIFETIME_LABEL
+from data_store import load_monitoring_data, save_monitoring_data
 from helpers import (
     build_remarks_text,
     component_status,
+    find_system_index_by_id,
     format_date,
     format_days,
     format_hours,
@@ -22,6 +26,28 @@ def _readonly_box(label, value):
         </div>
         """,
         unsafe_allow_html=True,
+    )
+
+
+def _sync_replacement_fields_from_component_map(system):
+    replacements = system.get("component_replacements", {}) or {}
+
+    lamp_entries = []
+    for key, value in replacements.items():
+        if key.startswith("Lamp ") and value:
+            lamp_entries.append((key, value))
+
+    lamp_entries.sort(key=lambda item: int(item[0].split(" ")[1]))
+    system["lamp_replacement"] = "; ".join(
+        f"{name} replaced ({value.strftime('%m/%d/%y')})"
+        for name, value in lamp_entries
+    )
+
+    ballast_date = replacements.get("Ballast")
+    system["ballast_replacement"] = (
+        f"Ballast replaced ({ballast_date.strftime('%m/%d/%y')})"
+        if ballast_date
+        else ""
     )
 
 
@@ -85,6 +111,97 @@ def render_editor_panel(selected_system):
         unsafe_allow_html=True,
     )
 
+    location_remark_value = st.text_area(
+        "System remark",
+        value=selected_system.get("remarks") or "",
+        height=90,
+        key=f'system_remark_{selected_system.get("system_id")}',
+    )
+
+    if st.button("Save system remark", use_container_width=True, key=f'save_system_remark_{selected_system.get("system_id")}'):
+        fresh_data = load_monitoring_data()
+        systems = fresh_data.get("systems", [])
+        index = find_system_index_by_id(systems, selected_system.get("system_id"))
+
+        if index is not None:
+            systems[index]["remarks"] = location_remark_value.strip()
+            save_monitoring_data(fresh_data)
+            st.success("System remark saved.")
+            st.rerun()
+
+    st.markdown('<div class="section-title">Timer actions</div>', unsafe_allow_html=True)
+
+    action_date = st.date_input(
+        "Replacement / restart date",
+        value=date.today(),
+        key=f'action_date_{selected_system.get("system_id")}',
+    )
+
+    if st.button("Restart system timer", use_container_width=True, key=f'restart_system_{selected_system.get("system_id")}'):
+        fresh_data = load_monitoring_data()
+        systems = fresh_data.get("systems", [])
+        index = find_system_index_by_id(systems, selected_system.get("system_id"))
+
+        if index is not None:
+            system = systems[index]
+            system["start_date"] = action_date
+            system["component_replacements"] = {}
+            system["lamp_replacement"] = ""
+            system["ballast_replacement"] = ""
+            save_monitoring_data(fresh_data)
+            st.success("System timer restarted.")
+            st.rerun()
+
+    component_options = ["Ballast"] + [
+        f'Lamp {i}' for i in range(1, int(float(selected_system.get("number_of_lamps") or 0)) + 1)
+    ]
+    selected_component = st.selectbox(
+        "Component to restart",
+        component_options,
+        key=f'component_select_{selected_system.get("system_id")}',
+    )
+
+    if st.button("Restart component timer", use_container_width=True, key=f'restart_component_{selected_system.get("system_id")}'):
+        fresh_data = load_monitoring_data()
+        systems = fresh_data.get("systems", [])
+        index = find_system_index_by_id(systems, selected_system.get("system_id"))
+
+        if index is not None:
+            system = systems[index]
+            system.setdefault("component_replacements", {})
+            system["component_replacements"][selected_component] = action_date
+            _sync_replacement_fields_from_component_map(system)
+            save_monitoring_data(fresh_data)
+            st.success(f"{selected_component} timer restarted.")
+            st.rerun()
+
+    component_remarks = selected_system.get("component_remarks", {}) or {}
+    component_remark_value = st.text_area(
+        f"{selected_component} remark",
+        value=component_remarks.get(selected_component, ""),
+        height=90,
+        key=f'component_remark_{selected_system.get("system_id")}_{selected_component}',
+    )
+
+    if st.button("Save component remark", use_container_width=True, key=f'save_component_remark_{selected_system.get("system_id")}'):
+        fresh_data = load_monitoring_data()
+        systems = fresh_data.get("systems", [])
+        index = find_system_index_by_id(systems, selected_system.get("system_id"))
+
+        if index is not None:
+            system = systems[index]
+            system.setdefault("component_remarks", {})
+            text = component_remark_value.strip()
+
+            if text:
+                system["component_remarks"][selected_component] = text
+            else:
+                system["component_remarks"].pop(selected_component, None)
+
+            save_monitoring_data(fresh_data)
+            st.success(f"{selected_component} remark saved.")
+            st.rerun()
+
     st.markdown('<div class="section-title">Components</div>', unsafe_allow_html=True)
     st.markdown(
         f'<div class="helper-text">Initial lifetime for lamp and ballast: <b>{INITIAL_LIFETIME_LABEL}</b></div>',
@@ -98,6 +215,10 @@ def render_editor_panel(selected_system):
 
         for row_idx, component in enumerate(comp_row):
             with comp_cols[row_idx]:
+                remark_line = ""
+                if component.get("remark"):
+                    remark_line = f'<div><b>Remark:</b> {component.get("remark")}</div>'
+
                 component_html = (
                     f'<div class="item-box">'
                     f'<div class="item-name">{component.get("component_name")}</div>'
@@ -107,6 +228,7 @@ def render_editor_panel(selected_system):
                     f'<div><b>End:</b> {format_date(component.get("end_date"))}</div>'
                     f'<div><b>Remaining:</b> {format_days(component.get("remaining_days"))} • {format_hours(component.get("remaining_hours"))}</div>'
                     f'<div><b>Replacement:</b> {component.get("replacement_note") or "Initial installation"}</div>'
+                    f'{remark_line}'
                     f'</div>'
                 )
                 st.markdown(component_html, unsafe_allow_html=True)

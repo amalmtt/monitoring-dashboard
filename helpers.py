@@ -10,7 +10,6 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from constants import (
     BADGE_LOGO_FILE,
     HEADER_LOGO_FILE,
-    INITIAL_LIFETIME_LABEL,
     WARNING_DAYS,
 )
 
@@ -173,20 +172,12 @@ def room_colors(status):
 
 
 def build_remarks_text(system):
-    parts = []
+    remark = str(system.get("remarks", "") or "").strip()
 
-    base_remarks = str(system.get("remarks", "") or "").strip()
-    if base_remarks:
-        parts.append(base_remarks)
+    if remark.lower() in {"n/a", "na", "-", "?"}:
+        return ""
 
-    lamp_replacement = str(system.get("lamp_replacement", "") or "").strip() or "N/A"
-    ballast_replacement = str(system.get("ballast_replacement", "") or "").strip() or "N/A"
-
-    parts.append(f"LAMP REPLACEMENT: {lamp_replacement}")
-    parts.append(f"BALLAST REPLACEMENT: {ballast_replacement}")
-    parts.append(f"INITIAL LIFETIME: {INITIAL_LIFETIME_LABEL}")
-
-    return " • ".join(parts)
+    return remark
 
 
 def matches_search(system, search_text):

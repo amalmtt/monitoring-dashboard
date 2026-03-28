@@ -2,7 +2,7 @@ import streamlit as st
 
 from components.editor_panel import render_editor_panel
 from components.main_area import render_main_area
-from constants import HEADER_LOGO_FILE, PAGE_TITLE
+from constants import BADGE_LOGO_FILE, HEADER_LOGO_FILE, PAGE_TITLE
 from data_store import load_monitoring_data
 from helpers import find_system_by_id
 from styles import render_global_styles
@@ -22,7 +22,11 @@ render_global_styles()
 data = load_monitoring_data()
 selected_system = find_system_by_id(data["systems"], st.session_state.selected_system_id)
 
-header_left, header_right = st.columns([5, 2], gap="large")
+header_badge, header_left, header_right = st.columns([1.0, 4.3, 2.0], gap="large")
+
+with header_badge:
+    if BADGE_LOGO_FILE.exists():
+        st.image(str(BADGE_LOGO_FILE), width=92)
 
 with header_left:
     st.markdown(f'<div class="page-title">{PAGE_TITLE}</div>', unsafe_allow_html=True)

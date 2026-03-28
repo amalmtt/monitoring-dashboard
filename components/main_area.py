@@ -144,8 +144,8 @@ def render_main_area(data):
                                 background: {colors["background"]};
                                 border: 1px solid {colors["border"]};
                                 border-radius: 18px;
-                                padding: 16px 14px 24px 16px;
-                                height: 360px;
+                                padding: 16px 14px 20px 16px;
+                                height: 350px;
                                 margin-bottom: 18px;
                                 box-sizing: border-box;
                                 display: flex;
@@ -169,7 +169,9 @@ def render_main_area(data):
                                 font-weight: 900 !important;
                                 color: {colors["title"]} !important;
                                 opacity: 1 !important;
-                                line-height: 1.15 !important;
+                                line-height: 1.12 !important;
+                                white-space: normal !important;
+                                word-break: break-word !important;
                             }}
 
                             .st-key-{open_key} button:hover {{
@@ -208,20 +210,14 @@ def render_main_area(data):
                 card = st.container(key=card_key)
 
                 with card:
-                    top_left, top_mid, top_right = st.columns([5.0, 2.2, 0.8])
+                    header_left, header_right = st.columns([6.0, 0.8])
 
-                    with top_left:
+                    with header_left:
                         if st.button(location, key=open_key):
                             st.session_state.selected_system_id = system.get("system_id")
                             st.rerun()
 
-                    with top_mid:
-                        st.markdown(
-                            f'<div style="display:flex; justify-content:flex-end; margin-top:0.10rem;">{status_badge(status)}</div>',
-                            unsafe_allow_html=True,
-                        )
-
-                    with top_right:
+                    with header_right:
                         with st.popover("ⓘ", key=details_key, type="tertiary"):
                             d1, d2, d3, d4 = st.columns(4)
 
@@ -304,6 +300,10 @@ def render_main_area(data):
 
                                 for row_idx, component in enumerate(comp_row):
                                     with comp_cols[row_idx]:
+                                        remark_line = ""
+                                        if component.get("remark"):
+                                            remark_line = f'<div><b>Remark:</b> {component.get("remark")}</div>'
+
                                         component_html = (
                                             f'<div class="item-box">'
                                             f'<div class="item-name">{component.get("component_name")}</div>'
@@ -313,14 +313,24 @@ def render_main_area(data):
                                             f'<div><b>End:</b> {format_date(component.get("end_date"))}</div>'
                                             f'<div><b>Remaining:</b> {format_days(component.get("remaining_days"))} • {format_hours(component.get("remaining_hours"))}</div>'
                                             f'<div><b>Replacement:</b> {component.get("replacement_note") or "Initial installation"}</div>'
+                                            f'{remark_line}'
                                             f'</div>'
                                         )
                                         st.markdown(component_html, unsafe_allow_html=True)
 
-                    st.markdown(
-                        f'<div class="card-subtitle"><b>Building:</b> {building}</div>',
-                        unsafe_allow_html=True,
-                    )
+                    sub_left, sub_right = st.columns([4.5, 2.3])
+
+                    with sub_left:
+                        st.markdown(
+                            f'<div class="card-subtitle"><b>Building:</b> {building}</div>',
+                            unsafe_allow_html=True,
+                        )
+
+                    with sub_right:
+                        st.markdown(
+                            f'<div style="display:flex; justify-content:flex-end; margin-top:0.05rem; margin-bottom:0.10rem;">{status_badge(status)}</div>',
+                            unsafe_allow_html=True,
+                        )
 
                     st.markdown(
                         f"""
