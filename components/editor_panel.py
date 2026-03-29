@@ -33,21 +33,25 @@ def _sync_replacement_fields_from_component_map(system):
     replacements = system.get("component_replacements", {}) or {}
 
     lamp_entries = []
+    ballast_entries = []
+
     for key, value in replacements.items():
         if key.startswith("Lamp ") and value:
             lamp_entries.append((key, value))
+        elif key.startswith("Ballast ") and value:
+            ballast_entries.append((key, value))
 
     lamp_entries.sort(key=lambda item: int(item[0].split(" ")[1]))
+    ballast_entries.sort(key=lambda item: int(item[0].split(" ")[1]))
+
     system["lamp_replacement"] = "; ".join(
         f"{name} replaced ({value.strftime('%m/%d/%y')})"
         for name, value in lamp_entries
     )
 
-    ballast_date = replacements.get("Ballast")
-    system["ballast_replacement"] = (
-        f"Ballast replaced ({ballast_date.strftime('%m/%d/%y')})"
-        if ballast_date
-        else ""
+    system["ballast_replacement"] = "; ".join(
+        f"{name} replaced ({value.strftime('%m/%d/%y')})"
+        for name, value in ballast_entries
     )
 
 
@@ -101,6 +105,7 @@ def render_editor_panel(selected_system):
 
     with c2:
         _readonly_box("NUMBER OF LAMPS", format_number(selected_system.get("number_of_lamps")))
+        _readonly_box("NUMBER OF BALLASTS", format_number(selected_system.get("number_of_ballasts", selected_system.get("number_of_lamps"))))
         _readonly_box("DESIGN FLOW RATE M3/H", f'{format_number(selected_system.get("design_flow_rate"))} m³/h')
         _readonly_box("Start Date", format_date(selected_system.get("start_date")))
         _readonly_box("End Date", format_date(selected_system.get("end_date")))
@@ -152,9 +157,14 @@ def render_editor_panel(selected_system):
             st.success("System timer restarted.")
             st.rerun()
 
-    component_options = ["Ballast"] + [
-        f'Lamp {i}' for i in range(1, int(float(selected_system.get("number_of_lamps") or 0)) + 1)
-    ]
+    ballast_count = int(float(selected_system.get("number_of_ballasts", selected_system.get("number_of_lamps") or 0)))
+    lamp_count = int(float(selected_system.get("number_of_lamps") or 0))
+
+    component_options = (
+        [f'Ballast {i}' for i in range(1, ballast_count + 1)] +
+        [f'Lamp {i}' for i in range(1, lamp_count + 1)]
+    )
+
     selected_component = st.selectbox(
         "Component to restart",
         component_options,

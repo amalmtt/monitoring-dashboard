@@ -40,6 +40,13 @@ def _serialize_date(value):
     return str(value)
 
 
+def _to_int_count(value, default=0):
+    try:
+        return int(float(value or default))
+    except (TypeError, ValueError):
+        return default
+
+
 def _parse_replacement_date(text):
     raw = str(text or "").strip()
     if raw == "":
@@ -118,8 +125,8 @@ def _normalize_component_replacements(system):
             replacements.setdefault(f"Lamp {lamp_number}", legacy_lamp_date)
 
     legacy_ballast_date = _parse_replacement_date(ballast_replacement_text)
-    if legacy_ballast_date:
-        replacements.setdefault("Ballast", legacy_ballast_date)
+    if legacy_ballast_date and "Ballast" not in replacements and "Ballast 1" not in replacements:
+        replacements["Ballast 1"] = legacy_ballast_date
 
     return replacements
 
@@ -132,6 +139,10 @@ def _normalize_component_remarks(system):
         text = str(value or "").strip()
         if text and text.lower() not in {"n/a", "na", "-", "?"}:
             remarks[key] = text
+
+    legacy_ballast = remarks.pop("Ballast", None)
+    if legacy_ballast and "Ballast 1" not in remarks:
+        remarks["Ballast 1"] = legacy_ballast
 
     return remarks
 
@@ -149,43 +160,50 @@ def _build_components(system):
     system["component_replacements"] = component_replacements
     system["component_remarks"] = component_remarks
 
+    lamp_count = _to_int_count(system.get("number_of_lamps"), 0)
+    ballast_count = _to_int_count(system.get("number_of_ballasts"), lamp_count)
+
+    system["number_of_lamps"] = lamp_count
+    system["number_of_ballasts"] = ballast_count
+
     replaced_lamps = _parse_replaced_lamp_numbers(lamp_replacement_text)
     replaced_lamp_date = _parse_replacement_date(lamp_replacement_text)
     ballast_replacement_date = _parse_replacement_date(ballast_replacement_text)
 
-    ballast_start = (
-        component_replacements.get("Ballast")
-        or ballast_replacement_date
-        or base_start
-    )
-    ballast_end, ballast_remaining_days, ballast_remaining_hours = _compute_component_dates(ballast_start)
+    for ballast_number in range(1, ballast_count + 1):
+        ballast_key = f"Ballast {ballast_number}"
 
-    ballast_note = ""
-    if component_replacements.get("Ballast"):
-        ballast_note = f'Ballast replaced ({component_replacements["Ballast"].strftime("%m/%d/%y")})'
-    elif ballast_replacement_text:
-        ballast_note = ballast_replacement_text
+        ballast_start = base_start
+        replacement_note = ""
 
-    components.append(
-        {
-            "component_id": f'{system.get("system_id")}_ballast',
-            "component_name": "Ballast",
-            "component_type": "ballast",
-            "start_date": ballast_start,
-            "end_date": ballast_end,
-            "remaining_days": ballast_remaining_days,
-            "remaining_hours": ballast_remaining_hours,
-            "replacement_note": ballast_note,
-            "remark": component_remarks.get("Ballast", ""),
-            "lifetime_label": INITIAL_LIFETIME_LABEL,
-            "status": _component_status_from_hours(ballast_remaining_hours),
-        }
-    )
+        if component_replacements.get(ballast_key):
+            ballast_start = component_replacements[ballast_key]
+            replacement_note = f'{ballast_key} replaced ({component_replacements[ballast_key].strftime("%m/%d/%y")})'
+        elif ballast_number == 1 and ballast_replacement_date:
+            ballast_start = ballast_replacement_date
+            replacement_note = ballast_replacement_text
 
-    lamp_count = int(float(system.get("number_of_lamps") or 0))
+        ballast_end, ballast_remaining_days, ballast_remaining_hours = _compute_component_dates(ballast_start)
+
+        components.append(
+            {
+                "component_id": f'{system.get("system_id")}_ballast_{ballast_number}',
+                "component_name": ballast_key,
+                "component_type": "ballast",
+                "start_date": ballast_start,
+                "end_date": ballast_end,
+                "remaining_days": ballast_remaining_days,
+                "remaining_hours": ballast_remaining_hours,
+                "replacement_note": replacement_note,
+                "remark": component_remarks.get(ballast_key, ""),
+                "lifetime_label": INITIAL_LIFETIME_LABEL,
+                "status": _component_status_from_hours(ballast_remaining_hours),
+            }
+        )
 
     for lamp_number in range(1, lamp_count + 1):
         lamp_key = f"Lamp {lamp_number}"
+
         lamp_start = base_start
         replacement_note = ""
 
@@ -229,7 +247,6 @@ def _apply_system_lifetime_from_components(system):
 
     system["start_date"] = min(c["start_date"] for c in valid_components)
     system["end_date"] = min(c["end_date"] for c in valid_components)
-
     system["remaining_days"] = min(remaining_days_values) if remaining_days_values else None
     system["remaining_hours"] = min(remaining_hours_values) if remaining_hours_values else None
 
